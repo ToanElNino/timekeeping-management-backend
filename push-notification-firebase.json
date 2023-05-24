@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "orbit-wallet-notification",
+  "private_key_id": "0c054a9756a321e4b2b92108dea78e923564f88a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDNpsUveywudRAe\nDCaqt8sjtuEOomyY8H9ZsOV5eh6U97qIFWOzsnm1e7+83FTb8fKMYYk//faYEPGV\nGC6Tyl76Uc4sx0z98cS/fuqluklRLZx5zJ3CIC8NQxn77BncurlvfYgUSUBUL0oy\nRE0qVoKm6RuQsQ0QVObU7KBAjIGLpHoYtEP6TwR1WdQ5RweuybxFzTR+EDxiaVg3\n6Hrx9J2E+uXjQ7mtu+iQ45XP98IdkBxL/0x15C1oEpqisFdbKbSB3tWt+ayVf4st\n9qsqF1CYz7QcdgFPK17PAmP2g8Vpi0gxTc19yvKEss7uM7BKd9xXYiMdfa6Ukyc5\n1JO2sc+BAgMBAAECggEAOY0szLNfM2ceShJjdc42ormItSQ+WPSg5xRKu9qxmUXU\npUW7H6xYRDIr/+n3M5A7rQ6UrtxfOMIxIWThkAmH1+yx0rU5ti2FPoQBnbyKzRWD\nH1Dka1G/aSo4qNgziqKUx38taGPxhT2wuW2E3M7WBGjjBnSN796atMa9uCK6FD5E\nWCQwfqcTLJ1gZB1mhA4DkTPeZ5JANFv84UpL+5FP2kAFs3MQuy+ise7wPPle582o\nA8InGOJJTPqQmtLyVias/p8nG7fFaFIcw+QvimvCNkJEogexx1G73Fq7Iypbwk0s\nGr8G8zbYQsaf5I1pc2cVNgC7TZDfAx3zu3Z/MVxzMwKBgQDrQspsRiMJKeo0t36t\nc2cCor7/Lg4AHakO+OSZRFqOfy2MWPwlHlEfXl6Kc/Vlt1WXEl8KP/RdyKO4sHQz\nDtCv3dyUYVGY9TEfoJTq1rELfix2torbup709J35gWNv2+hTRkK/6mvYi4m1dZZN\nwofuMZO7AKco+fNBPiK7bzxnZwKBgQDfx8X5o2n+RagZCLLFc83fl9reWpnPeFEi\nQAZQPiYKFmvNv9clB+YmZSh6cmH2UhtlbfeDY01u1UPFh2fAe19m5u+sbF0+v6uK\negBoammP7TfP7UtbMYWiYCGa6i/HrFFNe+Knwubmo/DDDbgCk/1ZdsWBC3bvaDxv\nOmmff85I1wKBgQDdzKOBPwKrEgxP1SumJaXZc0w00tu6Ojx39Cm5YhsqOzbbGc3m\nxNVgiJ0DVV3nntgfzN8zj6Y4gP/yENIMjQwssjPS5ImEdq3wjnm3id9y4WrUJTd2\n/1P7x1/kqprwC9jWIeiufTld9/hFzu18tElpRO5toKj4VeaD/SvLoIzHQwKBgDhR\n4QOZGx4BjfLu+38yTAgQAeegScGreE/0aSJc4dn8FpmrxIvvVv8mym82xmzl8Tsv\n1/FbVqukRPA7yeLpqfMOABgXFcirGJM7bUraLUMp4rgT8rk613UsWIjSk7/fIH8t\nxLeQF+jILdoJY9xSPpr7h22Y4xAR3dPokZiw48v1AoGBALq38WrDeUPv8RDDvBZM\nZMQloDb0kz2ZoFlcf3Ldpd3fRWQ6RudSdzQe5droJ3LX8Eeq+XWdVGeq7lKF7SSX\nrJ2pvwaF6WZ4wpnFmp4AO04vIrCwwT9l33zkS0AF0RoBfe70nEd3UnZ6CxWZBD/x\n8tJbGeSL56EEWLkLR19id/by\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-xxrf0@orbit-wallet-notification.iam.gserviceaccount.com",
+  "client_id": "105436314850046996548",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-xxrf0%40orbit-wallet-notification.iam.gserviceaccount.com"
+}
