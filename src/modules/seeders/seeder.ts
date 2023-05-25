@@ -45,12 +45,13 @@ export class Seeder {
 
   async admin() {
     for (let i = 0; i < adminDataSeeds.length; i++) {
-      const password = pwGenerator.generate({
-        length: 10,
-        numbers: true,
-        uppercase: true,
-        lowercase: true,
-      });
+      // const password = pwGenerator.generate({
+      //   length: 10,
+      //   numbers: true,
+      //   uppercase: true,
+      //   lowercase: true,
+      // });
+      const password = '123qwe';
       const superAdmin: IAdmin = {
         ...adminDataSeeds[i],
         password,

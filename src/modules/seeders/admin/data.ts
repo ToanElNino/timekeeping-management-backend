@@ -4,7 +4,7 @@ export const adminDataSeeds: IAdmin[] = [
   {
     username: 'superadmin',
     password: '',
-    email: 'superadmin@var-meta.com',
+    email: 'superadmin@gmail.com',
     avatarUrl: null,
     fullName: 'Super Admin',
     status: 'ACTIVE',
