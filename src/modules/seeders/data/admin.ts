@@ -3,7 +3,7 @@ import {IAdmin} from '../../../database/interfaces/IAdmin.interface';
 export const adminDataSeeds: IAdmin[] = [
   {
     username: 'superadmin',
-    password: '',
+    password: '123qwe',
     email: 'superadmin@gmail.com',
     avatarUrl: null,
     fullName: 'Super Admin',

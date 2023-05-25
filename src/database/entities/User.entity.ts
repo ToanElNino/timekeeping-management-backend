@@ -5,32 +5,21 @@ import {
   Column,
   Entity,
   Index,
-  JoinTable,
-  ManyToMany,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import {nowInMillis} from '../../shared/Utils';
 
 @Entity('user')
-@Index('user_wallet', ['userWallet'], {unique: true})
-@Index('referral_code', ['referralCode'], {unique: true})
+@Index('tenant_id', ['tenantId'], {unique: false})
 export class User {
-  @PrimaryColumn({
-    name: 'user_wallet',
-    type: 'varchar',
-    length: 255,
-    unique: true,
-  })
-  public userWallet: string;
+  @PrimaryGeneratedColumn({name: 'id', type: 'int'})
+  id: number;
 
   @Column({
-    name: 'referral_code',
-    type: 'varchar',
-    length: 100,
-    unique: true,
-    nullable: false,
+    name: 'tenant_id',
+    type: 'int',
   })
-  public referralCode: string;
+  public tenantId: number;
 
   @Column({
     name: 'account_name',
@@ -41,54 +30,74 @@ export class User {
   public accountName: string;
 
   @Column({
-    name: 'refer_by',
+    name: 'check_in_log_id',
     type: 'varchar',
-    length: 255,
+    length: 20,
     nullable: true,
   })
-  public referBy: string;
+  public checkInLogId: string;
 
   @Column({
-    name: 'config_body',
-    type: 'json',
+    name: 'account_id',
+    type: 'int',
     nullable: true,
   })
-  public configBody: string;
+  public accountId: number;
 
   @Column({
-    name: 'default_currency',
+    name: 'name',
     type: 'varchar',
     nullable: true,
-    length: 255,
+    length: 50,
   })
-  public defaultCurrency: string;
+  public name: string;
 
   @Column({
-    name: 'default_chain_id',
-    type: 'bigint',
+    name: 'email',
+    type: 'varchar',
     nullable: true,
+    length: 50,
   })
-  public defaultChainId: number;
+  public email: string;
+
+  @Column({
+    name: 'phone_number',
+    type: 'varchar',
+    nullable: true,
+    length: 50,
+  })
+  public phoneNumber: string;
+
+  @Column({
+    name: 'avatar_url',
+    type: 'varchar',
+    nullable: true,
+    length: 50,
+  })
+  public avatarUrl: string;
 
   @Column({
     name: 'status',
     type: 'varchar',
-    length: 50,
+    length: 20,
     default: 'ACTIVE',
   })
   public status: string;
 
-  // @ManyToMany(() => Merchant)
-  // @JoinTable({
-  //   name: 'merchant_interest',
-  //   joinColumn: {
-  //     name: 'user_wallet',
-  //   },
-  //   inverseJoinColumn: {
-  //     name: 'merchant_wallet',
-  //   },
-  // })
-  // public merchants: Merchant[];
+  @Column({
+    name: 'home_address',
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+  })
+  public homeAddress: string;
+
+  @Column({
+    name: 'department_id',
+    type: 'int',
+    nullable: true,
+  })
+  public departmentId: number;
 
   @Column({name: 'created_at', type: 'bigint', nullable: true})
   public createdAt: number;

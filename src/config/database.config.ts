@@ -1,6 +1,14 @@
 /* eslint-disable node/no-extraneous-require */
 import {DataSource, DataSourceOptions} from 'typeorm';
-import {Admin, ApiKey, User, Event, Chain} from '../database/entities';
+import {
+  Admin,
+  ApiKey,
+  User,
+  Event,
+  Chain,
+  Account,
+  Tenant,
+} from '../database/entities';
 require('dotenv').config();
 
 export const databaseConfig: DataSourceOptions = {
@@ -10,7 +18,7 @@ export const databaseConfig: DataSourceOptions = {
   username: process.env.TYPEORM_USERNAME,
   password: process.env.TYPEORM_PASSWORD,
   database: process.env.TYPEORM_DATABASE,
-  entities: [User, Admin, ApiKey, Event, Chain],
+  entities: [User, Admin, ApiKey, Event, Chain, Tenant, Account],
   synchronize: process.env.NODE_ENV === 'dev-api',
   migrations: ['src/database/migrations/*.ts'],
 };

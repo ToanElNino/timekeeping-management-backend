@@ -1,9 +1,11 @@
 import {Injectable, Logger} from '@nestjs/common';
-import {adminDataSeeds} from './admin/data';
+import {adminDataSeeds} from './data/admin';
 import {kmsCmkDataSeeds} from './kms/data';
 import {SeedService} from './seed.service';
 import pwGenerator from 'generate-password';
 import {IAdmin} from '../../database/interfaces/IAdmin.interface';
+import { accountDataSeeds } from './data/account';
+import { Account } from 'src/database/entities';
 
 @Injectable()
 export class Seeder {
@@ -17,6 +19,8 @@ export class Seeder {
       if (entity === 'admin') {
         this.logger.debug('Start seeding admin!');
         await this.admin();
+      } else if (entity === 'account') {
+        await this.account();
       } else if (process.env.ENTITY === 'kms-cmk') {
         this.logger.debug('Start seeding kms-cmk!');
       } else if (process.env.ENTITY === 'all') {
@@ -43,6 +47,25 @@ export class Seeder {
     }
   }
 
+  async account() {
+    for (let i = 0; i < accountDataSeeds.length; i++) {
+      // const password = pwGenerator.generate({
+      //   length: 10,
+      //   numbers: true,
+      //   uppercase: true,
+      //   lowercase: true,
+      // });
+      const account: Partial<Account> = {
+        ...accountDataSeeds[i],
+      };
+      await this.seedService.createOneAccount(account);
+      this.logger.debug(
+        `Seeding account ${account.username} with password: ${account.password}`
+      );
+      // return true;
+    }
+    return true;
+  }
   async admin() {
     for (let i = 0; i < adminDataSeeds.length; i++) {
       // const password = pwGenerator.generate({

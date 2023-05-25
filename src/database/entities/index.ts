@@ -4,3 +4,6 @@ export * from './User.entity';
 export * from './Admin.entity';
 export * from './Event.entity';
 export * from './Chain.entity';
+export * from './Event.entity';
+export * from './Account.entity';
+export * from './Tenant.entity';
