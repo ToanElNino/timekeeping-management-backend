@@ -10,7 +10,6 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 import {nowInMillis} from '../../shared/Utils';
-import {Merchant} from './Merchant.entity';
 
 @Entity('user')
 @Index('user_wallet', ['userWallet'], {unique: true})
@@ -79,17 +78,17 @@ export class User {
   })
   public status: string;
 
-  @ManyToMany(() => Merchant)
-  @JoinTable({
-    name: 'merchant_interest',
-    joinColumn: {
-      name: 'user_wallet',
-    },
-    inverseJoinColumn: {
-      name: 'merchant_wallet',
-    },
-  })
-  public merchants: Merchant[];
+  // @ManyToMany(() => Merchant)
+  // @JoinTable({
+  //   name: 'merchant_interest',
+  //   joinColumn: {
+  //     name: 'user_wallet',
+  //   },
+  //   inverseJoinColumn: {
+  //     name: 'merchant_wallet',
+  //   },
+  // })
+  // public merchants: Merchant[];
 
   @Column({name: 'created_at', type: 'bigint', nullable: true})
   public createdAt: number;

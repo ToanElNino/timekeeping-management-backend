@@ -1,3 +1,5 @@
+/* eslint-disable node/no-extraneous-require */
+/* eslint-disable node/no-extraneous-import */
 require('dotenv').config();
 import {NestFactory} from '@nestjs/core';
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';

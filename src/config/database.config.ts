@@ -1,33 +1,6 @@
 /* eslint-disable node/no-extraneous-require */
 import {DataSource, DataSourceOptions} from 'typeorm';
-import {
-  Admin,
-  ApiKey,
-  Config,
-  CurrencyConfig,
-  Token,
-  KmsCmk,
-  KmsDataKey,
-  LatestBlock,
-  MailJob,
-  MailLog,
-  Notification,
-  SocketNotification,
-  SystemWallet,
-  TransactionSwap,
-  User,
-  Transaction,
-  TokenInterest,
-  Event,
-  Conversation,
-  Message,
-  UserDevice,
-  PaymentRequest,
-  Chain,
-  TokenMultichain
-} from '../database/entities';
-import {Merchant} from '../database/entities/Merchant.entity';
-
+import {Admin, ApiKey, User, Event, Chain} from '../database/entities';
 require('dotenv').config();
 
 export const databaseConfig: DataSourceOptions = {
@@ -37,33 +10,7 @@ export const databaseConfig: DataSourceOptions = {
   username: process.env.TYPEORM_USERNAME,
   password: process.env.TYPEORM_PASSWORD,
   database: process.env.TYPEORM_DATABASE,
-  entities: [
-    CurrencyConfig,
-    KmsCmk,
-    KmsDataKey,
-    MailJob,
-    MailLog,
-    User,
-    Admin,
-    LatestBlock,
-    Config,
-    Notification,
-    ApiKey,
-    Token,
-    SocketNotification,
-    SystemWallet,
-    TransactionSwap,
-    Transaction,
-    TokenInterest,
-    Merchant,
-    Event,
-    Conversation,
-    Message,
-    PaymentRequest,
-    UserDevice,
-    Chain,
-    TokenMultichain
-  ],
+  entities: [User, Admin, ApiKey, Event, Chain],
   synchronize: process.env.NODE_ENV === 'dev-api',
   migrations: ['src/database/migrations/*.ts'],
 };

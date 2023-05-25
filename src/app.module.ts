@@ -17,16 +17,12 @@ import {AppService} from './app.service';
 import {databaseConfig} from './config/database.config';
 import {AdminModule} from './modules/admin/admin.module';
 import {UserModule} from './modules/user/user.module';
-import {CommonModule} from './modules/common/common.module';
 import {TransformInterceptor} from './config/rest/transform.interceptor';
 import {APP_FILTER, APP_GUARD, APP_INTERCEPTOR} from '@nestjs/core';
 import {ExceptionFilter} from './config/exception/exception.filter';
-import {NotificationModule} from './modules/notification/notification.module';
 import {redisConfig} from './config/redis.config';
-import {TokenModule} from './modules/token/token.module';
 import {AuthModule} from './modules/auth/auth.module';
 import {EventModule} from './modules/event/event.module';
-import {TransactionSwapModule} from './modules/transaction-swap/transactionSwap.module';
 import {AdminService} from './modules/admin/admin.service';
 import {JwtService} from '@nestjs/jwt';
 import {AuthService} from './modules/auth/auth.service';
@@ -44,12 +40,8 @@ const RedisStore = require('connect-redis')(session);
     AdminModule,
     AuthModule,
     UserModule,
-    CommonModule,
-    NotificationModule,
-    TokenModule,
     RedisModule,
     EventModule,
-    TransactionSwapModule,
     ChainModule,
     FileStorageModule,
   ],

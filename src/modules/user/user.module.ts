@@ -7,7 +7,6 @@ import {Admin, User} from '../../database/entities';
 import {TwoFactorAuthenticationService} from './twoFactorAuthentication.service';
 import {UserService} from './user.service';
 import {MailModule} from '../mail/mail.module';
-import {CommonModule} from '../common/common.module';
 import {SingleSignOnService} from './sso.service';
 import {S3Handler} from '../../shared/S3Handler';
 import {AdminRepository} from '../admin/admin.repository';
@@ -26,7 +25,6 @@ import {AuthModule} from '../auth/auth.module';
     }),
     AuthModule,
     MailModule,
-    CommonModule,
   ],
   providers: [
     TwoFactorAuthenticationService,

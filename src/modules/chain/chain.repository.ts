@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
-import {Chain, Token} from 'src/database/entities';
+import {Chain} from 'src/database/entities';
 import {CreateChainRequest} from './request/CreateChainRequest.dto';
 import {nowInMillis} from 'src/shared/Utils';
 

@@ -19,7 +19,6 @@ export class Seeder {
         await this.admin();
       } else if (process.env.ENTITY === 'kms-cmk') {
         this.logger.debug('Start seeding kms-cmk!');
-        await this.kmsCmk();
       } else if (process.env.ENTITY === 'all') {
         this.logger.debug('Start seeding all seeders!');
         try {
@@ -28,8 +27,8 @@ export class Seeder {
           this.logger.error('Failed seeding admin with error: ', error.message);
         }
 
+        // eslint-disable-next-line no-empty
         try {
-          await this.kmsCmk();
         } catch (error) {
           this.logger.error(
             'Failed seeding kms-cmk with error: ',
@@ -69,10 +68,5 @@ export class Seeder {
       }
       return true;
     }
-  }
-
-  async kmsCmk() {
-    await this.seedService.createKmsCmks(kmsCmkDataSeeds);
-    return true;
   }
 }
