@@ -1,0 +1,13 @@
+{
+    "sqltools.connections": [
+        {
+            "server": "13.215.90.241",
+            "port": 9042,
+            "previewLimit": 50,
+            "driver": "Cassandra",
+            "name": "13.215.90.241",
+            "username": "cassandra",
+            "password": "mypassword"
+        }
+    ]
+}
