@@ -2,7 +2,6 @@ require('dotenv').config();
 import {NestFactory} from '@nestjs/core';
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 import {AppModule} from './app.module';
-import {AppWorkerModule} from './app-worker.module';
 import {debugLog, logger} from './shared/logger';
 import * as fs from 'fs';
 import {ValidationPipe} from '@nestjs/common';
@@ -41,7 +40,6 @@ async function bootstrap() {
     process.env.NODE_ENV === 'prod-worker'
   ) {
     const server = express();
-    app = await NestFactory.create(AppWorkerModule, new ExpressAdapter(server));
     app.set('trust proxy', 1);
     app.use(logger);
     app.enableCors();

@@ -22,21 +22,17 @@ import {TransformInterceptor} from './config/rest/transform.interceptor';
 import {APP_FILTER, APP_GUARD, APP_INTERCEPTOR} from '@nestjs/core';
 import {ExceptionFilter} from './config/exception/exception.filter';
 import {NotificationModule} from './modules/notification/notification.module';
-import {ApiV1Module} from './modules/api-v1/api-v1.module';
 import {redisConfig} from './config/redis.config';
 import {TokenModule} from './modules/token/token.module';
-import {SocketNotificationModule} from './modules/socket-notification/socket-notification.module';
 import {AuthModule} from './modules/auth/auth.module';
-import {MerchantModule} from './modules/merchant/merchant.module';
 import {EventModule} from './modules/event/event.module';
 import {TransactionSwapModule} from './modules/transaction-swap/transactionSwap.module';
-import {ActivityModule} from './modules/activity/activity.module';
 import {AdminService} from './modules/admin/admin.service';
 import {JwtService} from '@nestjs/jwt';
 import {AuthService} from './modules/auth/auth.service';
 import {ChainModule} from './modules/chain/chain.module';
 import {FileStorageModule} from './modules/file-storage/file-storage.module';
-import { RolesGuard } from './modules/auth/roles.guard';
+import {RolesGuard} from './modules/auth/roles.guard';
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 
@@ -50,14 +46,10 @@ const RedisStore = require('connect-redis')(session);
     UserModule,
     CommonModule,
     NotificationModule,
-    ApiV1Module,
     TokenModule,
     RedisModule,
-    SocketNotificationModule,
-    MerchantModule,
     EventModule,
     TransactionSwapModule,
-    ActivityModule,
     ChainModule,
     FileStorageModule,
   ],

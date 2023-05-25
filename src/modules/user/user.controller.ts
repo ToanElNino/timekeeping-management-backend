@@ -25,7 +25,7 @@ export class UserController {
 
   @Get('')
   // @UseGuards(JwtAuthGuard)
-  @Roles(Role.USER)
+  // @Roles(Role.USER)
   @ApiOperation({
     tags: ['user'],
     operationId: 'get-list-end-user',

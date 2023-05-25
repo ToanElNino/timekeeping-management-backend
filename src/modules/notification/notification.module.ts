@@ -7,7 +7,6 @@ import {NotificationController} from './notification.controller';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {Event, Notification, User, UserDevice} from '../../database/entities';
 import {JwtModule} from '@nestjs/jwt';
-import {SocketService} from '../worker/socket.service';
 import {S3Handler} from '../../shared/S3Handler';
 import {AuthModule} from '../auth/auth.module';
 import {EventService} from '../event/event.service';
@@ -26,7 +25,6 @@ import {EventRepository} from '../event/event.repository';
   providers: [
     NotificationService,
     TelegramService,
-    SocketService,
     S3Handler,
     EventService,
     EventRepository,
