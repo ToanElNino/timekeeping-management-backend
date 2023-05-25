@@ -19,7 +19,7 @@ import {AdminModule} from './modules/admin/admin.module';
 import {UserModule} from './modules/user/user.module';
 import {CommonModule} from './modules/common/common.module';
 import {TransformInterceptor} from './config/rest/transform.interceptor';
-import {APP_FILTER, APP_INTERCEPTOR} from '@nestjs/core';
+import {APP_FILTER, APP_GUARD, APP_INTERCEPTOR} from '@nestjs/core';
 import {ExceptionFilter} from './config/exception/exception.filter';
 import {NotificationModule} from './modules/notification/notification.module';
 import {ApiV1Module} from './modules/api-v1/api-v1.module';
@@ -36,6 +36,7 @@ import {JwtService} from '@nestjs/jwt';
 import {AuthService} from './modules/auth/auth.service';
 import {ChainModule} from './modules/chain/chain.module';
 import {FileStorageModule} from './modules/file-storage/file-storage.module';
+import { RolesGuard } from './modules/auth/roles.guard';
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 
@@ -73,6 +74,10 @@ const RedisStore = require('connect-redis')(session);
     {
       provide: APP_FILTER,
       useClass: ExceptionFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
     Logger,
   ],

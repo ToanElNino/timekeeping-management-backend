@@ -98,6 +98,7 @@ export class AuthService {
       username: user.username,
       email: user.email,
       userId: user.id,
+      role: 'admin',
     };
     const access_token = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
@@ -114,6 +115,7 @@ export class AuthService {
     return {
       email: user.email,
       username: user.username,
+      role: 'admin',
       type: user.type,
       access_token,
       refresh_token,

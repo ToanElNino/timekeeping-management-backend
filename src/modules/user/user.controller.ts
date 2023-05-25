@@ -15,14 +15,17 @@ import {UserService} from './user.service';
 import {User} from '../../database/entities/User.entity';
 import {PaginationResponse} from '../../config/rest/paginationResponse';
 import {JwtAuthGuard} from '../auth/jwt-auth.guard';
-import { UserBaseResponsePagination } from './response/UserBasePagination.dto';
+import {UserBaseResponsePagination} from './response/UserBasePagination.dto';
+import {Role} from 'src/shared/enums';
+import {Roles} from '../auth/roles.decorator';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
+  @Roles(Role.USER)
   @ApiOperation({
     tags: ['user'],
     operationId: 'get-list-end-user',
