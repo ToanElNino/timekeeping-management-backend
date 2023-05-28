@@ -19,7 +19,7 @@ export const databaseConfig: DataSourceOptions = {
   password: process.env.TYPEORM_PASSWORD,
   database: process.env.TYPEORM_DATABASE,
   entities: [User, Admin, ApiKey, Event, Chain, Tenant, Account],
-  synchronize: process.env.NODE_ENV === 'dev-api',
+  synchronize: process.env.NODE_ENV === 'dev-api123432',
   migrations: ['src/database/migrations/*.ts'],
 };
 const dataSource = new DataSource(databaseConfig);

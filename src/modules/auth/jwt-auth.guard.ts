@@ -30,14 +30,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         throw Causes.USER_ERROR;
       jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
 
-      const userDB = await this.authService.getUserByEmailAndUsername(
-        user['email'],
-        user['username']
-      );
-      if (!userDB) throw Causes.USER_ERROR;
+      // const userDB = await this.authService.getUserByEmailAndUsername(
+      //   user['email'],
+      //   user['username']
+      // );
+      // if (!userDB) throw Causes.USER_ERROR;
 
-      // const p = await this.authService.isValidToken(`${user['userId']}`, token.split(' ')[1]);
-      req.user = userDB;
+      // // const p = await this.authService.isValidToken(`${user['userId']}`, token.split(' ')[1]);
+      // req.user = userDB;
 
       // return p;
       return true;

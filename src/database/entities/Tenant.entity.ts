@@ -25,8 +25,6 @@ export class Tenant {
   @Column({name: 'name', type: 'varchar', length: 50})
   public name: string;
 
-  @Column({name: 'password', type: 'varchar', length: 256})
-  public password: string;
   @Column({
     name: 'status',
     type: 'varchar',

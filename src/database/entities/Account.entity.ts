@@ -9,19 +9,18 @@ import {
 import {nowInMillis} from '../../shared/Utils';
 
 @Entity('account')
-@Index('company_code', ['companyCode'], {unique: false})
+@Index('tenant_id', ['tenantId'], {unique: false})
 export class Account {
   @PrimaryGeneratedColumn({name: 'id', type: 'int'})
   id: number;
 
   @Column({
-    name: 'company_code',
-    type: 'varchar',
-    length: 50,
+    name: 'tenant_id',
+    type: 'int',
     unique: false,
     nullable: false,
   })
-  public companyCode: string;
+  public tenantId: number;
 
   @Column({
     name: 'username',

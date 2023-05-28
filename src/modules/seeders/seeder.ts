@@ -4,8 +4,8 @@ import {kmsCmkDataSeeds} from './kms/data';
 import {SeedService} from './seed.service';
 import pwGenerator from 'generate-password';
 import {IAdmin} from '../../database/interfaces/IAdmin.interface';
-import { accountDataSeeds } from './data/account';
-import { Account } from 'src/database/entities';
+import {accountDataSeeds} from './data/account';
+import {Account} from 'src/database/entities';
 
 @Injectable()
 export class Seeder {

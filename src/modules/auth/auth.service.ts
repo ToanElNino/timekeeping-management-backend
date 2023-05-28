@@ -1,13 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {CACHE_MANAGER, HttpException, Inject, Injectable} from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import {JwtService} from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import {Cache} from 'cache-manager';
 import {IPaginationOptions} from 'nestjs-typeorm-paginate';
 import {Causes} from '../../config/exception/causes';
 import {PaginationResponse} from '../../config/rest/paginationResponse';
-import {Admin, User} from '../../database/entities';
+import {Account, Admin, Tenant, User} from '../../database/entities';
 import {IAdmin} from '../../database/interfaces/IAdmin.interface';
 import {encrypt} from '../../shared/Utils';
 import {CreateAdmin} from './request/create.dto';
@@ -15,15 +21,21 @@ import {CreatePartnership} from './request/createPartnership.dto';
 import {PagingFilterDataAdmin, Sort} from './request/pagingFilterDataAdmin.dto';
 import {UpdateProfile} from './request/update-profile.dto';
 import {AuthRepository} from './auth.repository';
+import {LoginBody} from './request/login.dto';
+import {InjectRepository} from '@nestjs/typeorm';
+import {Repository} from 'typeorm';
+import {Role} from 'src/shared/enums';
+import {ROLE_ID} from 'src/shared/enums';
+import {CreateAccountBody} from './request/create-account.dto';
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
 
-    private adminRepository: AuthRepository,
-
+    private authRepository: AuthRepository,
+    // @InjectRepository(Account)
+    // private accountRepository: Repository<Account>,
     // @Inject(CACHE_MANAGER) private cacheManager: Cache
-
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
   ) {}
 
@@ -31,11 +43,11 @@ export class AuthService {
     const hashedPassword = await argon2.hash(admin.password);
 
     admin = {...admin, password: hashedPassword};
-    return this.adminRepository.save(admin);
+    return this.authRepository.save(admin);
   }
 
   async getListAdmin(): Promise<any> {
-    const data = await this.adminRepository.find();
+    const data = await this.authRepository.find();
 
     return data.map(e => {
       return {
@@ -51,16 +63,52 @@ export class AuthService {
   async validateAdmin(data: any): Promise<any> {
     const {username, email} = data;
     if (username) {
-      return this.adminRepository.getUserByUsername(username);
+      return this.authRepository.getUserByUsername(username);
     }
     if (email) {
-      return this.adminRepository.getUserByEmail(email);
+      return this.authRepository.getUserByEmail(email);
     }
     return null;
   }
+  async validateTenantCode(tenantCode: string) {
+    const tenantDb = await this.authRepository.validateTenantCode(tenantCode);
+    if (!tenantDb)
+      throw new HttpException('Invalid company code', HttpStatus.BAD_REQUEST);
+    return tenantDb;
+  }
 
+  async validateUserFromLoginBody(data: LoginBody): Promise<any> {
+    const {username, companyCode} = data;
+    const tenant = await this.authRepository.validateTenantCode(companyCode);
+    const account: Account = await this.authRepository.validateAccount(
+      tenant.id,
+      username
+    );
+    const user = await this.authRepository.validateUser(tenant.id, account.id);
+    // console.log(user);
+    return {...user, password: account.password, roleId: account.roleId};
+  }
+
+  async createAccount(data: CreateAccountBody): Promise<any> {
+    const tenant = await this.authRepository.validateTenantCode(
+      data.companyCode
+    );
+    await this.authRepository.checkDuplicateAccount(data.username, tenant.id);
+
+    const newAccount = await this.authRepository.createNewAccount(
+      data,
+      tenant.id
+    );
+    console.log(newAccount);
+    const newUser = await this.authRepository.createNewUser(
+      tenant.id,
+      newAccount.id
+    );
+    // console.log(user);
+    return {...newUser};
+  }
   async validateAdminActive(email: any) {
-    const admin = await this.adminRepository.getUserByEmail(email);
+    const admin = await this.authRepository.getUserByEmail(email);
 
     if (admin) {
       if (admin.status === 'ACTIVE') {
@@ -69,7 +117,6 @@ export class AuthService {
         return true;
       }
     }
-
     return false;
   }
 
@@ -94,11 +141,20 @@ export class AuthService {
   }
 
   async login(user: any): Promise<any> {
+    const roleName = ROLE_ID[user.roleId];
+    // console.log('roleName: ', roleName);
+    if (!roleName)
+      throw new HttpException(
+        'Invalid role for account',
+        HttpStatus.BAD_REQUEST
+      );
     const payload = {
-      username: user.username,
-      email: user.email,
       userId: user.id,
-      role: 'admin',
+      username: user.username,
+      tenantId: user.tenantId,
+      accountId: user.accountId,
+      role: roleName,
+      roleId: user.roleId,
     };
     const access_token = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
@@ -113,10 +169,12 @@ export class AuthService {
     await this.setValidToken(`${payload.userId}`, refresh_token);
 
     return {
-      email: user.email,
+      userId: user.id,
       username: user.username,
-      role: 'admin',
-      type: user.type,
+      tenantId: user.tenantId,
+      accountId: user.accountId,
+      role: roleName,
+      roleId: user.roleId,
       access_token,
       refresh_token,
     };
@@ -128,16 +186,25 @@ export class AuthService {
       const user = await this.jwtService.verifyAsync(refreshToken, {
         secret: process.env.JWT_SECRET,
       });
-      if (!user || !(user['username'] || user['email']))
-        throw Causes.USER_ERROR;
-      const userDB = await this.getUserByEmailAndUsername(
-        user['email'],
-        user['username']
+      if (!user) throw Causes.USER_ERROR;
+      console.log(user);
+      const tenant = await this.authRepository.validateTenantId(user.tenantId);
+      const account: Account = await this.authRepository.validateAccount(
+        tenant.id,
+        user.username
+      );
+      const userDB = await this.authRepository.validateUser(
+        tenant.id,
+        account.id
       );
       if (!userDB) throw Causes.USER_ERROR;
       const status = await this.isValidToken(`${userDB.id}`, refreshToken);
       if (!status) throw Causes.JWT_EXPIRED;
-      return this.login(userDB);
+      return this.login({
+        ...userDB,
+        password: account.password,
+        roleId: account.roleId,
+      });
     } catch (error) {
       // console.log('error: ', error);
       if (error.message === 'jwt expired') {
@@ -151,17 +218,17 @@ export class AuthService {
   }
 
   //register
-  async checkDuplicatedUser(data: CreatePartnership): Promise<any> {
-    //check duplicated username or email
-    const duplicatedUser = await this.getUserByEmailAndUsername(
-      data.email,
-      data.username
-    );
-    return duplicatedUser;
-  }
+  // async checkDuplicatedUser(data: CreateAccountBody): Promise<any> {
+  //   //check duplicated username or email
+  //   const duplicatedUser = await this.getUserByUsernameAndTenantId(
+  //     data.email,
+  //     data.username
+  //   );
+  //   return duplicatedUser;
+  // }
 
   async checkPermissionUser(user: any): Promise<any> {
-    const userData = await this.adminRepository.findOne(user.id);
+    const userData = await this.authRepository.findOne(user.id);
     // check is super admin or not
     if (userData.type === 1) {
       return true;
@@ -170,7 +237,7 @@ export class AuthService {
   }
 
   async isAdmin(user: any): Promise<any> {
-    const userData = await this.adminRepository.findOne(user.id);
+    const userData = await this.authRepository.findOne(user.id);
     // check is super admin or not
     if (userData.type === 1) {
       return true;
@@ -179,7 +246,7 @@ export class AuthService {
   }
 
   async isPartnerShip(user: any): Promise<any> {
-    const userData = await this.adminRepository.findOne(user.id);
+    const userData = await this.authRepository.findOne(user.id);
     // console.log('userData: ', userData)
     // check is partnership or not
     if (userData.type === 2) {
@@ -189,7 +256,7 @@ export class AuthService {
   }
 
   async isActive(user: any): Promise<any> {
-    const userData = await this.adminRepository.findOne({
+    const userData = await this.authRepository.findOne({
       where: {
         id: user.id,
         status: 'ACTIVE',
@@ -207,17 +274,15 @@ export class AuthService {
     username: string
   ): Promise<Admin | undefined> {
     return (
-      (await this.adminRepository.findOne({where: {username: username}})) ||
-      (await this.adminRepository.findOne({where: {email: email}}))
+      (await this.authRepository.findOne({where: {username: username}})) ||
+      (await this.authRepository.findOne({where: {email: email}}))
     );
   }
 
   async health(token: string, user: Admin) {
     if (!user || !user.username || !token) return false;
 
-    const dataUser = await this.adminRepository.getUserByUsername(
-      user.username
-    );
+    const dataUser = await this.authRepository.getUserByUsername(user.username);
     if (dataUser) {
       return true;
     } else {

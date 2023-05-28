@@ -5,7 +5,7 @@ import {PassportModule} from '@nestjs/passport';
 import {JwtModule} from '@nestjs/jwt';
 import {JwtStrategy} from './jwt.strategy';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {Admin, User} from '../../database/entities';
+import {Account, Admin, Tenant, User} from '../../database/entities';
 import {MailService} from '../mail/mail.service';
 import {SingleSignOnService} from '../user/sso.service';
 import {TwoFactorAuthenticationService} from '../user/twoFactorAuthentication.service';
@@ -13,7 +13,7 @@ import {S3Handler} from '../../shared/S3Handler';
 import {AuthRepository} from './auth.repository';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Admin]),
+    TypeOrmModule.forFeature([Admin, Account, User, Tenant]),
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,

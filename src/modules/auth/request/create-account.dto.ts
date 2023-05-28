@@ -2,7 +2,7 @@ import {ApiProperty} from '@nestjs/swagger';
 import {IsEmail, IsNotEmpty, IsOptional, IsString} from 'class-validator';
 import {Causes} from '../../../config/exception/causes';
 
-export class LoginBody {
+export class CreateAccountBody {
   @ApiProperty({
     type: String,
     example: 'toanquoc1',
@@ -11,7 +11,7 @@ export class LoginBody {
 
   @ApiProperty({
     type: String,
-    example: 'Pa@superadmin',
+    example: '123qwe',
   })
   password: string;
 
@@ -20,4 +20,10 @@ export class LoginBody {
     example: 'HUST',
   })
   companyCode: string;
+
+  @ApiProperty({
+    type: Number,
+    example: 1,
+  })
+  roleId: number;
 }

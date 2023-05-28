@@ -29,15 +29,16 @@ export class RolesGuard implements CanActivate {
       throw Causes.JWT_MISSING;
     }
     const user = this.jwtService.decode(token.split(' ')[1]);
-    if (!user || !(user['username'] || user['email'])) throw Causes.USER_ERROR;
+    if (!user || !(user['username'] || user['tenantId']))
+      throw Causes.USER_ERROR;
     console.log('user: ', user);
 
-    const userDB = await this.authService.getUserByEmailAndUsername(
-      user['email'],
-      user['username']
-    );
-    console.log('userDB: ', userDB);
-    if (!userDB) throw Causes.USER_ERROR;
+    // const userDB = await this.authService.getAccount(
+    //   user['email'],
+    //   user['tenantId']
+    // );
+    // console.log('userDB: ', userDB);
+    // if (!userDB) throw Causes.USER_ERROR;
     console.log('role form token: ', user['role']);
     console.log('role from guard: ', requiredRoles);
 
