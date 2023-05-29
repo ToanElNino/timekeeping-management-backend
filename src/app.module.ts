@@ -29,6 +29,7 @@ import {AuthService} from './modules/auth/auth.service';
 import {ChainModule} from './modules/chain/chain.module';
 import {FileStorageModule} from './modules/file-storage/file-storage.module';
 import {RolesGuard} from './modules/auth/roles.guard';
+import {TenantModule} from './modules/tenant/teanant.module';
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 
@@ -44,6 +45,7 @@ const RedisStore = require('connect-redis')(session);
     EventModule,
     ChainModule,
     FileStorageModule,
+    TenantModule,
   ],
   controllers: [AppController],
   providers: [
