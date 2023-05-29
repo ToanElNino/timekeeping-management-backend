@@ -30,5 +30,5 @@ services:
     volumes:
       - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
     ports:
-      - "26379:6379"
+      - "26379:26379"
 
