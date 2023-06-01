@@ -48,8 +48,6 @@ import {
   updateClientSecret,
   updateStatus,
 } from '../../shared/emailTemplate';
-import {validate} from 'email-domain-validator';
-import {JsonException} from '../../config/exception/exception.dto';
 import {UpdateProfile} from './request/update-profile.dto';
 import {AuthToken} from './request/auth-token.dto';
 

@@ -1,7 +1,6 @@
 import {IPaginationOptions, Pagination} from 'nestjs-typeorm-paginate';
 import * as CryptoJS from 'crypto-js';
 import {Causes} from '../config/exception/causes';
-import Web3 from 'web3';
 import axios from 'axios';
 import {fromBuffer} from 'file-type';
 import {BigNumber} from 'bignumber.js';
@@ -245,63 +244,6 @@ export function getOffset(paginationOptions: IPaginationOptions) {
     }
   }
   return offset;
-}
-
-export async function checkTypeERC(
-  rpcEndpoint: string,
-  contractAddress: string,
-  type: string
-) {
-  const web3 = new Web3(rpcEndpoint);
-
-  const ERC165Abi: any = [
-    {
-      inputs: [
-        {
-          internalType: 'bytes4',
-          name: 'interfaceId',
-          type: 'bytes4',
-        },
-      ],
-      name: 'supportsInterface',
-      outputs: [
-        {
-          internalType: 'bool',
-          name: '',
-          type: 'bool',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-  ];
-  const ERC1155InterfaceId = '0xd9b67a26';
-  const ERC721InterfaceId = '0x80ac58cd';
-
-  const contract = new web3.eth.Contract(ERC165Abi, contractAddress);
-
-  if (type == 'ERC1155') {
-    return contract.methods.supportsInterface(ERC1155InterfaceId).call();
-  }
-
-  if (type == 'ERC721') {
-    return contract.methods.supportsInterface(ERC721InterfaceId).call();
-  }
-}
-
-async function web3Cache(key, func) {
-  let value = nodeCache.get(key);
-  if (value == undefined) {
-    // handle miss!
-    value = await func;
-    nodeCache.set(key, value);
-    return value;
-  }
-  return value;
-}
-
-export async function getBlockNumber(chainId, web3) {
-  return web3Cache(`${chainId}: getBlockNumber`, web3.eth.getBlockNumber());
 }
 
 export function convertBigNumberToDecimal(bigNum: string, decimal: number) {
