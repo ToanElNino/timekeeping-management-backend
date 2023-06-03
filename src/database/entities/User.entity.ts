@@ -23,11 +23,10 @@ export class User {
 
   @Column({
     name: 'check_in_log_id',
-    type: 'varchar',
-    length: 20,
+    type: 'int',
     nullable: true,
   })
-  public checkInLogId: string;
+  public checkInLogId: number;
 
   @Column({
     name: 'account_id',

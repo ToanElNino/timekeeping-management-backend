@@ -16,15 +16,15 @@ export class PushACheckinLogRequest {
   @ApiProperty({
     type: String,
   })
-  public day_record: string;
+  public dayRecord: string;
 
   @ApiProperty({
     type: Number,
   })
-  public time_record_number: number;
+  public timeRecordNumber: number;
 
   @ApiProperty({
     type: Number,
   })
-  public user_id: number;
+  public userId: number;
 }

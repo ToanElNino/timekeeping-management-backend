@@ -90,9 +90,7 @@ export class AuthService {
   }
 
   async createAccount(data: CreateAccountBody): Promise<any> {
-    const tenant = await this.authRepository.validateTenantCode(
-      data.companyCode
-    );
+    const tenant = await this.authRepository.validateTenantId(data.tenantId);
     await this.authRepository.checkDuplicateAccount(data.username, tenant.id);
 
     const newAccount = await this.authRepository.createNewAccount(
@@ -153,6 +151,7 @@ export class AuthService {
       username: user.username,
       tenantId: user.tenantId,
       accountId: user.accountId,
+      check_in_log_id: user.checkInLogId,
       role: roleName,
       roleId: user.roleId,
     };
@@ -173,6 +172,7 @@ export class AuthService {
       username: user.username,
       tenantId: user.tenantId,
       accountId: user.accountId,
+      check_in_log_id: user.checkInLogId,
       role: roleName,
       roleId: user.roleId,
       access_token,

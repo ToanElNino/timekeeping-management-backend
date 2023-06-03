@@ -16,10 +16,10 @@ export class CreateAccountBody {
   password: string;
 
   @ApiProperty({
-    type: String,
-    example: 'HUST',
+    type: Number,
+    example: 1,
   })
-  companyCode: string;
+  tenantId: number;
 
   @ApiProperty({
     type: Number,

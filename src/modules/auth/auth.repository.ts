@@ -69,6 +69,7 @@ export class AuthRepository extends Repository<Admin> {
     let newAccount: Partial<Account> = {
       id: null,
       tenantId: tenantId,
+      roleId: data.roleId,
       username: data.username,
       password: hashedPassword,
       status: 'ACTIVE',
