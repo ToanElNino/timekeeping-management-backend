@@ -9,5 +9,8 @@
             "username": "cassandra",
             "password": "mypassword"
         }
+    ],
+    "cSpell.words": [
+        "checkin"
     ]
 }
