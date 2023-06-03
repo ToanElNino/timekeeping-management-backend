@@ -162,7 +162,7 @@ export class Causes {
   );
 
   public static PASSWORD_IS_FALSE = new JsonException(
-    "The password you entered didn't match our record",
+    'Wrong password',
     HttpStatus.BAD_REQUEST,
     'PASSWORD_IS_FALSE'
   );

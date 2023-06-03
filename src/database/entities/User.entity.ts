@@ -22,14 +22,6 @@ export class User {
   public tenantId: number;
 
   @Column({
-    name: 'account_name',
-    type: 'varchar',
-    length: 255,
-    nullable: true,
-  })
-  public accountName: string;
-
-  @Column({
     name: 'check_in_log_id',
     type: 'varchar',
     length: 20,

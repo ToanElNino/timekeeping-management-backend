@@ -42,13 +42,12 @@ export class AuthController {
     if (user.status !== 'ACTIVE') {
       throw Causes.ADMIN_IS_NOT_ACTIVE;
     }
-    return this.authService.login(user);
 
-    // if (await argon2.verify(user.password, data.password)) {
-    //   return this.authService.login(user);
-    // } else {
-    //   throw Causes.PASSWORD_IS_FALSE;
-    // }
+    if (await argon2.verify(user.password, data.password)) {
+      return this.authService.login(user);
+    } else {
+      throw Causes.PASSWORD_IS_FALSE;
+    }
   }
 
   @Post('/admin/create-account')

@@ -104,6 +104,8 @@ export class AuthRepository extends Repository<Admin> {
   }
 
   async validateUser(tenantId: number, accountId: number): Promise<any> {
+    console.log('accountId: ', accountId);
+    console.log('tenantId: ', tenantId);
     const user = await this.userRepository.findOne({
       where: {
         tenantId: tenantId,
