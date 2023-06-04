@@ -1,7 +1,6 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {IPaginationOptions} from 'nestjs-typeorm-paginate';
-import {PaginationResponse} from '../../config/rest/paginationResponse';
-import {CheckinLog, Event} from '../../database/entities';
+import {CheckinLog, TimeSheet} from '../../database/entities';
 import {
   getArrayPaginationBuildTotal,
   getOffset,
@@ -9,14 +8,15 @@ import {
 } from '../../shared/Utils';
 import {Repository, getConnection} from 'typeorm';
 import {InjectRepository} from '@nestjs/typeorm';
-import {Causes} from '../../config/exception/causes';
 import {PushACheckinLogRequest} from './request/pushACheckinLog';
 
 @Injectable()
 export class CheckinLogService {
   constructor(
     @InjectRepository(CheckinLog)
-    private checkinLogRepo: Repository<CheckinLog>
+    private checkinLogRepo: Repository<CheckinLog>,
+    @InjectRepository(TimeSheet)
+    private timeSheetRepo: Repository<TimeSheet>
   ) {}
   async getListCheckinLog(paginationOptions: IPaginationOptions, params: any) {
     const limit = Number(paginationOptions.limit);
@@ -35,14 +35,27 @@ export class CheckinLogService {
       .orderBy('checkin_log.createdAt', 'DESC');
     //filter for topic and title by keyword params
 
-    if (params.tenantId) {
-      queryBuilder.andWhere('checkin_log.tenant_id =:tenantId', {
-        tenantId: params.tenantId,
-      });
-      queryCount.andWhere('checkin_log.tenant_id =:tenantId', {
-        tenantId: params.tenantId,
-      });
-    }
+    queryBuilder.andWhere('checkin_log.tenant_id =:tenantId', {
+      tenantId: params.tenantId,
+    });
+    queryCount.andWhere('checkin_log.tenant_id =:tenantId', {
+      tenantId: params.tenantId,
+    });
+    //month
+    queryBuilder.andWhere('checkin_log.month_record =:month', {
+      month: params.month,
+    });
+    queryCount.andWhere('checkin_log.month_record =:month', {
+      month: params.month,
+    });
+    //user id
+    queryBuilder.andWhere('checkin_log.user_id =:userId', {
+      userId: params.userId,
+    });
+    queryCount.andWhere('checkin_log.user_id =:userId', {
+      userId: params.userId,
+    });
+    //day
     if (params.day) {
       queryBuilder.andWhere('checkin_log.day_record =:day', {
         day: params.day,
@@ -52,16 +65,7 @@ export class CheckinLogService {
       });
     }
 
-    if (params.userId) {
-      queryBuilder.andWhere('checkin_log.user_id =:userId', {
-        userId: params.userId,
-      });
-      queryCount.andWhere('checkin_log.user_id =:userId', {
-        userId: params.userId,
-      });
-    }
-
-    const data = await queryBuilder.execute();
+    const data = await queryBuilder.getMany();
     const countData = await queryCount.execute();
     console.log(data);
     console.log(countData);
@@ -80,10 +84,12 @@ export class CheckinLogService {
     };
   }
   async pushALog(data: PushACheckinLogRequest) {
+    const monthRecord = data.dayRecord.substring(data.dayRecord.length - 7);
     const logEntity: CheckinLog = {
       id: data.id,
       tenantId: data.tenantId,
       dayRecord: data.dayRecord,
+      monthRecord,
       timeRecordNumber: data.timeRecordNumber,
       createdAt: nowInMillis(),
       updatedAt: nowInMillis(),
@@ -96,6 +102,24 @@ export class CheckinLogService {
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
+    const timeSheetDB = await this.timeSheetRepo.findOne({
+      where: {id: data.id},
+    });
+    console.log(timeSheetDB);
+    if (!timeSheetDB) {
+      const timeSheetEntity: Partial<TimeSheet> = {
+        id: data.id,
+        tenantId: data.tenantId,
+        dayRecord: data.dayRecord,
+        monthRecord,
+        timeRecordNumber: data.timeRecordNumber,
+        createdAt: nowInMillis(),
+        updatedAt: nowInMillis(),
+        userId: data.userId,
+      };
+      await this.timeSheetRepo.save(timeSheetEntity);
+    }
+
     return log;
   }
 

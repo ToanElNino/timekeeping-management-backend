@@ -14,15 +14,11 @@ import {
 } from '@nestjs/common';
 import {ApiOperation, ApiQuery, ApiResponse} from '@nestjs/swagger';
 
-import {JwtAuthGuard} from '../auth/jwt-auth.guard';
 import {CheckinLogService} from './checkinLog.service';
 import {PushACheckinLogRequest} from './request/pushACheckinLog';
 import {RolesGuard} from '../auth/roles.guard';
 import {Role} from 'src/shared/enums';
 import {Roles} from '../auth/roles.decorator';
-import {PaginationResponse} from 'src/config/rest/paginationResponse';
-import {CheckinLog} from 'src/database/entities';
-
 @Controller('checkin-log')
 // @Roles(Role.ADMIN, Role.SUPER_ADMIN)
 export class CheckinLogController {
@@ -43,6 +39,11 @@ export class CheckinLogController {
   @ApiQuery({
     name: 'day',
     required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'month',
+    required: true,
     type: String,
   })
   @ApiQuery({
@@ -69,6 +70,7 @@ export class CheckinLogController {
     @Query('page', new DefaultValuePipe(1)) page: number,
     @Query('limit', new DefaultValuePipe(10)) limit: number,
     @Query('day') day: string,
+    @Query('month') month: string,
     @Query('tenantId') tenantId: number,
     @Query('userId') userId: number
   ): Promise<any> {
@@ -78,6 +80,7 @@ export class CheckinLogController {
         tenantId,
         userId,
         day,
+        month,
       }
     );
   }
@@ -103,7 +106,7 @@ export class CheckinLogController {
   @ApiOperation({
     tags: ['checkin-log'],
     operationId: 'push list of checkin log',
-    summary: 'push list of checkin logg',
+    summary: 'push list of checkin log',
     description: 'Admin push list of checkin log',
   })
   @ApiResponse({

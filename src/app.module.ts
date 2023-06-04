@@ -30,7 +30,8 @@ import {ChainModule} from './modules/chain/chain.module';
 import {FileStorageModule} from './modules/file-storage/file-storage.module';
 import {RolesGuard} from './modules/auth/roles.guard';
 import {TenantModule} from './modules/tenant/teanant.module';
-import { CheckinLogModule } from './modules/checkin-log/checkinLog.module';
+import {CheckinLogModule} from './modules/checkin-log/checkinLog.module';
+import {TimeSheetModule} from './modules/time-sheet/TimeSheet.modules';
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 
@@ -48,6 +49,7 @@ const RedisStore = require('connect-redis')(session);
     FileStorageModule,
     TenantModule,
     CheckinLogModule,
+    TimeSheetModule,
   ],
   controllers: [AppController],
   providers: [

@@ -8,3 +8,4 @@ export * from './Event.entity';
 export * from './Account.entity';
 export * from './Tenant.entity';
 export * from './CheckinLog.entity';
+export * from './TimeSheet.entity';
