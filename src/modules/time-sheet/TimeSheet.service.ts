@@ -14,7 +14,9 @@ import {InjectRepository} from '@nestjs/typeorm';
 export class TimeSheetService {
   constructor(
     @InjectRepository(TimeSheet)
-    private timeSheetRepo: Repository<TimeSheet>
+    private timeSheetRepo: Repository<TimeSheet>,
+    @InjectRepository(CheckinLog)
+    private checkinLogRepo: Repository<CheckinLog>
   ) {}
   async getListCheckinLog(paginationOptions: IPaginationOptions, params: any) {
     const limit = Number(paginationOptions.limit);
@@ -82,5 +84,13 @@ export class TimeSheetService {
       results: items,
       pagination: meta,
     };
+  }
+
+  async calculateATimeSheet(item: TimeSheet) {
+    if (item.isCalculated) {
+      return item;
+    }
+    const checkinLog = await this.checkinLogRepo.find({where: {id: item.id}});
+    if (!checkinLog) return {...item};
   }
 }

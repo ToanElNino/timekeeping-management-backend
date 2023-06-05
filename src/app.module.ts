@@ -32,6 +32,7 @@ import {RolesGuard} from './modules/auth/roles.guard';
 import {TenantModule} from './modules/tenant/teanant.module';
 import {CheckinLogModule} from './modules/checkin-log/checkinLog.module';
 import {TimeSheetModule} from './modules/time-sheet/TimeSheet.modules';
+import { ScheduleModule } from './modules/schedule/schedule.module';
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 
@@ -50,6 +51,7 @@ const RedisStore = require('connect-redis')(session);
     TenantModule,
     CheckinLogModule,
     TimeSheetModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [

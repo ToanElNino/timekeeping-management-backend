@@ -10,6 +10,8 @@ import {
   Tenant,
   CheckinLog,
   TimeSheet,
+  Request,
+  Schedule,
 } from '../database/entities';
 require('dotenv').config();
 
@@ -30,6 +32,8 @@ export const databaseConfig: DataSourceOptions = {
     Account,
     CheckinLog,
     TimeSheet,
+    Request,
+    Schedule,
   ],
   synchronize: process.env.NODE_ENV === 'dev-api123432',
   migrations: ['src/database/migrations/*.ts'],

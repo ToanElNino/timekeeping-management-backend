@@ -9,3 +9,5 @@ export * from './Account.entity';
 export * from './Tenant.entity';
 export * from './CheckinLog.entity';
 export * from './TimeSheet.entity';
+export * from './Request.entity';
+export * from './Schedule.entity';

@@ -1,10 +1,10 @@
 import {Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {CheckinLog, TimeSheet} from 'src/database/entities';
 import {AuthModule} from '../auth/auth.module';
 import {JwtModule} from '@nestjs/jwt';
-import {TimeSheetController} from './TimeSheet.controller';
-import {TimeSheetService} from './TimeSheet.service';
+import {ScheduleController} from './schedule.controller';
+import {ScheduleService} from './schedule.service';
+import {Schedule} from 'src/database/entities';
 @Module({
   imports: [
     AuthModule,
@@ -12,9 +12,9 @@ import {TimeSheetService} from './TimeSheet.service';
       secret: process.env.JWT_SECRET,
       // signOptions: { expiresIn: 24 * 60 * 60 },
     }),
-    TypeOrmModule.forFeature([TimeSheet, CheckinLog]),
+    TypeOrmModule.forFeature([Schedule]),
   ],
-  controllers: [TimeSheetController],
-  providers: [TimeSheetService],
+  controllers: [ScheduleController],
+  providers: [ScheduleService],
 })
-export class TimeSheetModule {}
+export class ScheduleModule {}
