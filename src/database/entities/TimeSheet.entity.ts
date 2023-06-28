@@ -31,6 +31,20 @@ export class TimeSheet {
   public monthRecord: string;
 
   @Column({
+    name: 'time_come',
+    type: 'bigint',
+    nullable: true,
+  })
+  public timeCome: number;
+
+  @Column({
+    name: 'time_leave',
+    type: 'bigint',
+    nullable: true,
+  })
+  public timeLeave: number;
+
+  @Column({
     name: 'is_calculated',
     type: 'tinyint',
     default: 0,
@@ -63,18 +77,26 @@ export class TimeSheet {
   public leaveEarlyMinutes: number;
 
   @Column({
-    name: 'working_day',
-    type: 'int',
+    name: 'working_day_1',
+    type: 'float',
     nullable: false,
     default: 0,
   })
-  public workingDay: number;
+  public workingDay1: number;
+
+  @Column({
+    name: 'working_day_2',
+    type: 'float',
+    nullable: false,
+    default: 0.5,
+  })
+  public workingDay2: number;
 
   @Column({
     name: 'working_hours',
-    type: 'int',
+    type: 'float',
     nullable: false,
-    default: 0,
+    default: 0.5,
   })
   public workingHours: number;
 

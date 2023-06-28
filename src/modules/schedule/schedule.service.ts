@@ -9,7 +9,7 @@ import {
 } from '../../shared/Utils';
 import {Repository, getConnection} from 'typeorm';
 import {InjectRepository} from '@nestjs/typeorm';
-import { CreateScheduleRequest } from './request/createSchedule';
+import {CreateScheduleRequest} from './request/createSchedule';
 
 @Injectable()
 export class ScheduleService {
@@ -68,6 +68,7 @@ export class ScheduleService {
       createdAt: nowInMillis(),
       updatedAt: nowInMillis(),
       id: null,
+      status: 'ACTIVE',
       tenantId: data.tenantId,
       name: data.name,
       dayFrom: data.dayFrom,
@@ -84,6 +85,8 @@ export class ScheduleService {
       timeEarly2: data.timeEarl2,
       timeComeOff2: data.timeComeOff2,
       timeLeaveOff2: data.timeLeaveOff2,
+      latestTime: data.latestTime,
+      earliestTime: data.earliestTime,
       timeKeepingStrategyId: 0,
     };
     const newSchedule = await this.scheduleRepo.save(schedule);

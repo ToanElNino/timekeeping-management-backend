@@ -1,4 +1,3 @@
-import { String } from 'aws-sdk/clients/acm';
 import {Column, Entity, Index, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity('schedule')
@@ -20,6 +19,14 @@ export class Schedule {
     nullable: true,
   })
   public name: string;
+
+  @Column({
+    name: 'status',
+    type: 'varchar',
+    length: 50,
+    default: 'ACTIVE',
+  })
+  public status: string;
 
   @Column({name: 'day_from', type: 'bigint', nullable: true})
   public dayFrom: number;
@@ -62,6 +69,12 @@ export class Schedule {
 
   @Column({name: 'time_leave_off_2', type: 'varchar', length: 5})
   public timeLeaveOff2: string;
+
+  @Column({name: 'latest_time', type: 'varchar', length: 5})
+  public latestTime: string;
+
+  @Column({name: 'earliest_time', type: 'varchar', length: 5})
+  public earliestTime: string;
 
   @Column({name: 'time_keeping_strategy_id', type: 'int', nullable: true})
   public timeKeepingStrategyId: number;

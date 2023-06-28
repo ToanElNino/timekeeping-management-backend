@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import {ApiOperation, ApiQuery, ApiResponse} from '@nestjs/swagger';
 import {ScheduleService} from './schedule.service';
-import { CreateScheduleRequest } from './request/createSchedule';
+import {CreateScheduleRequest} from './request/createSchedule';
 
 @Controller('schedule')
 // @Roles(Role.ADMIN, Role.SUPER_ADMIN)

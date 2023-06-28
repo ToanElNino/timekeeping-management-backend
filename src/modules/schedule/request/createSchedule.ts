@@ -103,4 +103,16 @@ export class CreateScheduleRequest {
     example: '16:30',
   })
   public timeLeaveOff2: string;
+
+  @ApiPropertyOptional({
+    type: String,
+    example: '07:30',
+  })
+  public earliestTime: string;
+
+  @ApiPropertyOptional({
+    type: String,
+    example: '18:30',
+  })
+  public latestTime: string;
 }

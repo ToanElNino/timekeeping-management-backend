@@ -103,12 +103,12 @@ export class CheckinLogService {
       );
     }
     const timeSheetDB = await this.timeSheetRepo.findOne({
-      where: {id: data.id},
+      where: {id: `${data.tenantId}_${data.userId}_${data.dayRecord}`},
     });
     console.log(timeSheetDB);
     if (!timeSheetDB) {
       const timeSheetEntity: Partial<TimeSheet> = {
-        id: data.id,
+        id: `${data.tenantId}_${data.userId}_${data.dayRecord}`,
         tenantId: data.tenantId,
         dayRecord: data.dayRecord,
         monthRecord,
