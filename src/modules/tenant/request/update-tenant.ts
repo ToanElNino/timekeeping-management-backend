@@ -1,7 +1,7 @@
 import {ApiProperty} from '@nestjs/swagger';
 import {IsOptional} from 'class-validator';
 
-export class CreateTenantBody {
+export class UpdateTenantBody {
   @ApiProperty({
     type: String,
     example: 'Bach khoa',

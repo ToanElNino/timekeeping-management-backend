@@ -7,8 +7,8 @@ export class TimeSheetWorker {
   constructor(private timesheetWorkerService: TimeSheetWorkerService) {}
   @Cron('*/10 * * * * *')
   async handleCron() {
-    console.log('handleCron: ', new Date());
-    await this.timesheetWorkerService.calculateTimeSheetForTenant(1);
+    // console.log('handleCron: ', new Date());
+    // await this.timesheetWorkerService.calculateTimeSheetForTenant(1);
   }
 
   // @Cron('*/5 * * * * *')
