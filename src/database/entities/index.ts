@@ -11,3 +11,4 @@ export * from './CheckinLog.entity';
 export * from './TimeSheet.entity';
 export * from './Request.entity';
 export * from './Schedule.entity';
+export * from './Department.entity';

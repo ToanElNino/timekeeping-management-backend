@@ -29,11 +29,12 @@ import {AuthService} from './modules/auth/auth.service';
 import {ChainModule} from './modules/chain/chain.module';
 import {FileStorageModule} from './modules/file-storage/file-storage.module';
 import {RolesGuard} from './modules/auth/roles.guard';
-import {TenantModule} from './modules/tenant/teanant.module';
+import {TenantModule} from './modules/tenant/tenant.module';
 import {CheckinLogModule} from './modules/checkin-log/checkinLog.module';
 import {TimeSheetModule} from './modules/time-sheet/TimeSheet.modules';
 import {ScheduleModule} from './modules/schedule/schedule.module';
 import {TimeSheetWorkerModule} from './modules/timesheet-worker/timesheet-worker.module';
+import {DepartmentModule} from './modules/department/department.module';
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 
@@ -54,6 +55,7 @@ const RedisStore = require('connect-redis')(session);
     TimeSheetModule,
     ScheduleModule,
     TimeSheetWorkerModule,
+    DepartmentModule,
   ],
   controllers: [AppController],
   providers: [

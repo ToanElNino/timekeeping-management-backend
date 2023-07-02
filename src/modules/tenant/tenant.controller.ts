@@ -5,6 +5,7 @@ import {
   DefaultValuePipe,
   Get,
   HttpStatus,
+  Param,
   Post,
   Put,
   Query,
@@ -22,6 +23,7 @@ import {JwtAuthGuard} from '../auth/jwt-auth.guard';
 import {TenantService} from './tenant.service';
 import {CreateTenantBody} from './request/create-tenant';
 import {FileInterceptor} from '@nestjs/platform-express';
+import {UpdateStatusTenantBody} from './request/update-status';
 
 @Controller('tenant')
 export class TenantController {
@@ -103,5 +105,23 @@ export class TenantController {
   ): Promise<any> {
     const res = this.tenantService.updateTenant(body);
     return res;
+  }
+
+  @Put(':id/change-status')
+  @ApiOperation({
+    tags: ['tenant'],
+    operationId: 'Super admin update tenant status',
+    summary: 'Super admin update tenant status',
+    description: 'Super admin update tenant status',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Successful',
+  })
+  async updateStatusChain(
+    @Body() body: UpdateStatusTenantBody,
+    @Param('id') id: number
+  ): Promise<any> {
+    return await this.tenantService.updateStatus(id, body);
   }
 }

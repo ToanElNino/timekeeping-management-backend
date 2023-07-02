@@ -15,9 +15,10 @@ import {
 import {ApiOperation, ApiQuery, ApiResponse} from '@nestjs/swagger';
 import {ScheduleService} from './schedule.service';
 import {CreateScheduleRequest} from './request/createSchedule';
+import {UpdateScheduleRequest} from './request/updateSchedule';
 
 @Controller('schedule')
-// @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+// @Roles(Role.ADMIN)
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
@@ -61,6 +62,21 @@ export class ScheduleController {
     );
   }
 
+  @Get(':id')
+  @ApiOperation({
+    tags: ['schedule'],
+    operationId: 'tenant admin get schedule',
+    summary: 'tenant admin get schedule',
+    description: 'tenant admin get schedule',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Successful',
+  })
+  async updateStatusChain(@Param('id') id: number): Promise<any> {
+    return await this.scheduleService.getATenantSchedule(id);
+  }
+
   @Post('/create-schedule')
   // @UseGuards(JwtAuthGuard)
   @ApiOperation({
@@ -75,5 +91,21 @@ export class ScheduleController {
   })
   async pushALog(@Body() body: CreateScheduleRequest): Promise<any> {
     return await this.scheduleService.createSchedule(body);
+  }
+
+  @Put('/update-schedule')
+  @ApiOperation({
+    tags: ['schedule'],
+    operationId: 'admin update a schedule for tenant',
+    summary: 'admin update a schedule for tenant',
+    description: 'admin update a schedule for tenant',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Successful',
+  })
+  async updateSchedule(@Body() body: UpdateScheduleRequest): Promise<any> {
+    console.log('update: ', body);
+    return await this.scheduleService.updateSchedule(body);
   }
 }

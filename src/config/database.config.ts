@@ -12,6 +12,7 @@ import {
   TimeSheet,
   Request,
   Schedule,
+  Department,
 } from '../database/entities';
 require('dotenv').config();
 
@@ -34,6 +35,7 @@ export const databaseConfig: DataSourceOptions = {
     TimeSheet,
     Request,
     Schedule,
+    Department,
   ],
   synchronize: process.env.NODE_ENV === 'dev-api123432',
   migrations: ['src/database/migrations/*.ts'],

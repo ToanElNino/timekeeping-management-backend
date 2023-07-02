@@ -10,6 +10,7 @@ import {
 import {Repository, getConnection} from 'typeorm';
 import {InjectRepository} from '@nestjs/typeorm';
 import {CreateScheduleRequest} from './request/createSchedule';
+import {UpdateScheduleRequest} from './request/updateSchedule';
 
 @Injectable()
 export class ScheduleService {
@@ -97,5 +98,48 @@ export class ScheduleService {
       );
     }
     return newSchedule;
+  }
+  async getATenantSchedule(tenantId: number) {
+    const schedule = await this.scheduleRepo.findOne({
+      where: {
+        tenantId: tenantId,
+      },
+    });
+    if (!schedule) return new Schedule();
+    return schedule;
+  }
+  async updateSchedule(data: UpdateScheduleRequest) {
+    const scheduleDB = await this.scheduleRepo.findOne({
+      where: {id: data.id},
+    });
+    if (!scheduleDB) {
+      throw new HttpException('Invalid schedule id', HttpStatus.BAD_REQUEST);
+    }
+
+    // scheduleDB.dayFrom = data.dayFrom;
+    // scheduleDB.dayTo = data.dayTo;
+    scheduleDB.timeStart1 = data.timeStart1;
+    scheduleDB.timeEnd1 = data.timeEnd1;
+    scheduleDB.timeDelay1 = data.timeDelay1;
+    scheduleDB.timeEarly1 = data.timeEarl1;
+    scheduleDB.timeComeOff1 = data.timeComeOff1;
+    scheduleDB.timeLeaveOff1 = data.timeLeaveOff1;
+    scheduleDB.timeStart2 = data.timeStart2;
+    scheduleDB.timeEnd2 = data.timeEnd2;
+    scheduleDB.timeDelay2 = data.timeDelay2;
+    scheduleDB.timeEarly2 = data.timeEarl2;
+    scheduleDB.timeComeOff2 = data.timeComeOff2;
+    scheduleDB.timeLeaveOff2 = data.timeLeaveOff2;
+    scheduleDB.latestTime = data.latestTime;
+    scheduleDB.earliestTime = data.earliestTime;
+    scheduleDB.timeKeepingStrategyId = 0;
+    const updateSchedule = await this.scheduleRepo.save(scheduleDB);
+    if (!updateSchedule) {
+      throw new HttpException(
+        'Cannot update new schedule',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+    return updateSchedule;
   }
 }

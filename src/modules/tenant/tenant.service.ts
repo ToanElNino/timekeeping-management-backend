@@ -3,8 +3,13 @@ import {CreateTenantBody} from './request/create-tenant';
 import {Repository} from 'typeorm';
 import {Tenant} from 'src/database/entities';
 import {InjectRepository} from '@nestjs/typeorm';
-import {getArrayPaginationBuildTotal, getOffset} from 'src/shared/Utils';
+import {
+  getArrayPaginationBuildTotal,
+  getOffset,
+  nowInMillis,
+} from 'src/shared/Utils';
 import {IPaginationOptions} from 'nestjs-typeorm-paginate';
+import {UpdateStatusTenantBody} from './request/update-status';
 @Injectable()
 export class TenantService {
   constructor(
@@ -24,6 +29,7 @@ export class TenantService {
     const newTenant: Partial<Tenant> = {
       name: body.name,
       code: body.code,
+      createdAt: nowInMillis(),
     };
     const res = await this.tenantRepository.save(newTenant);
     if (!res) {
@@ -51,6 +57,29 @@ export class TenantService {
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
+    return res;
+  }
+
+  async updateStatus(id: number, body: UpdateStatusTenantBody) {
+    if (body.status !== 'ACTIVE' && body.status !== 'INACTIVE') {
+      throw new HttpException('Invalid status', HttpStatus.BAD_REQUEST);
+    }
+    const tenantDB = await this.tenantRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+    if (!tenantDB)
+      throw new HttpException(
+        'Tenant id does not exist',
+        HttpStatus.BAD_REQUEST
+      );
+    if (tenantDB.status === body.status) {
+      throw new HttpException('Same old status', HttpStatus.BAD_REQUEST);
+    }
+    tenantDB.status = body.status;
+    tenantDB.updatedAt = nowInMillis();
+    const res = await this.tenantRepository.save(tenantDB);
     return res;
   }
 
