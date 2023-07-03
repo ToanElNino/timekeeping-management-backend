@@ -63,7 +63,6 @@ export class User {
     name: 'avatar_url',
     type: 'varchar',
     nullable: true,
-    length: 50,
   })
   public avatarUrl: string;
 
@@ -89,6 +88,9 @@ export class User {
     nullable: true,
   })
   public departmentId: number;
+
+  @Column({name: 'onboard_at', type: 'bigint', nullable: true})
+  public onboardAt: number;
 
   @Column({name: 'created_at', type: 'bigint', nullable: true})
   public createdAt: number;

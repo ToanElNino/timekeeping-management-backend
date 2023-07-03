@@ -14,6 +14,13 @@ export class Tenant {
   id: number;
 
   @Column({
+    name: 'parent_tenant_id',
+    type: 'int',
+    nullable: true,
+  })
+  public parentTenantId: number;
+
+  @Column({
     name: 'code',
     type: 'varchar',
     length: 20,
@@ -24,6 +31,9 @@ export class Tenant {
 
   @Column({name: 'name', type: 'varchar', length: 50})
   public name: string;
+
+  @Column({name: 'icon_url', type: 'varchar', nullable: true})
+  iconUrl: string;
 
   @Column({
     name: 'status',

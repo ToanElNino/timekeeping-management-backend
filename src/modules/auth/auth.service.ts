@@ -86,7 +86,14 @@ export class AuthService {
     );
     const user = await this.authRepository.validateUser(tenant.id, account.id);
     // console.log(user);
-    return {...user, password: account.password, roleId: account.roleId};
+    return {
+      ...user,
+      password: account.password,
+      roleId: account.roleId,
+      tenantCode: tenant.code,
+      tenantIcon: tenant.iconUrl,
+      tenantName: tenant.name,
+    };
   }
 
   async createAccount(data: CreateAccountBody): Promise<any> {
@@ -97,7 +104,7 @@ export class AuthService {
       data,
       tenant.id
     );
-    console.log(newAccount);
+    // console.log(newAccount);
     const newUser = await this.authRepository.createNewUser(
       tenant.id,
       newAccount.id
@@ -146,10 +153,14 @@ export class AuthService {
         'Invalid role for account',
         HttpStatus.BAD_REQUEST
       );
+    // console.log(user);
     const payload = {
       userId: user.id,
       username: user.username,
       tenantId: user.tenantId,
+      tenantCode: user.tenantCode,
+      tenantIcon: user.tenantIcon,
+      tenantName: user.tenantName,
       accountId: user.accountId,
       check_in_log_id: user.checkInLogId,
       role: roleName,
@@ -171,6 +182,9 @@ export class AuthService {
       userId: user.id,
       username: user.username,
       tenantId: user.tenantId,
+      tenantCode: user.tenantCode,
+      tenantIcon: user.tenantIcon,
+      tenantName: user.tenantName,
       accountId: user.accountId,
       check_in_log_id: user.checkInLogId,
       role: roleName,
@@ -187,7 +201,7 @@ export class AuthService {
         secret: process.env.JWT_SECRET,
       });
       if (!user) throw Causes.USER_ERROR;
-      console.log(user);
+      // console.log(user);
       const tenant = await this.authRepository.validateTenantId(user.tenantId);
       const account: Account = await this.authRepository.validateAccount(
         tenant.id,
@@ -204,6 +218,9 @@ export class AuthService {
         ...userDB,
         password: account.password,
         roleId: account.roleId,
+        tenantCode: tenant.code,
+        tenantIcon: tenant.iconUrl,
+        tenantName: tenant.name,
       });
     } catch (error) {
       // console.log('error: ', error);
@@ -319,9 +336,8 @@ export class AuthService {
     const user = this.jwtService.decode(token.split(' ')[1]);
     if (!user || !(user['username'] || user['tenantId']))
       throw Causes.USER_ERROR;
-    console.log('user: ', user);
-    console.log('token: ', token);
-    console.log('tenantId: ', token);
+    // console.log('user: ', user);
+    // console.log('tenantId: ', user['tenantId']);
     return {
       tenantId: user['tenantId'],
       accountId: user['accountId'],

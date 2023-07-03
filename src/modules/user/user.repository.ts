@@ -20,7 +20,22 @@ export class UserRepository extends Repository<User> {
     const queryCount = this.createQueryBuilder('user')
       .select(' Count (1) as Total')
       .orderBy('user.createdAt', 'DESC');
-
+    if (params.tenantId) {
+      queryBuilder.andWhere('user.tenant_id =:tenantId', {
+        tenantId: params.tenantId,
+      });
+      queryCount.andWhere('user.tenant_id =:tenantId', {
+        tenantId: params.tenantId,
+      });
+    }
+    if (params.departmentId !== undefined && Number(params.departmentId) > 1) {
+      queryBuilder.andWhere('user.department_id =:departmentId', {
+        departmentId: params.departmentId,
+      });
+      queryCount.andWhere('user.department_id =:departmentId', {
+        departmentId: params.departmentId,
+      });
+    }
     if (params.keyWord && params.keyWord !== '') {
       if (
         params.keyWord.includes('%') !== true &&
@@ -29,17 +44,17 @@ export class UserRepository extends Repository<User> {
         // `event.topic like '%${params.keyWord.trim()}%' || event.title like '%${params.keyWord.trim()}%'`
 
         queryBuilder.andWhere(
-          `user.userWallet like '%${params.keyWord.trim()}%' || user.accountName like '%${params.keyWord.trim()}%'`
+          `user.name like '%${params.keyWord.trim()}%' || user.email like '%${params.keyWord.trim()}%'`
         );
         queryCount.andWhere(
-          `user.userWallet like '%${params.keyWord.trim()}%' || user.accountName like '%${params.keyWord.trim()}%'`
+          `user.name like '%${params.keyWord.trim()}%' || user.email like '%${params.keyWord.trim()}%'`
         );
       } else {
         queryBuilder.andWhere(
-          `user.userWallet like '%!${params.keyWord.trim()}%' ESCAPE '!' || user.accountName like '%!${params.keyWord.trim()}%' ESCAPE '!'`
+          `user.name like '%!${params.keyWord.trim()}%' ESCAPE '!' || user.email like '%!${params.keyWord.trim()}%' ESCAPE '!'`
         );
         queryCount.andWhere(
-          `user.userWallet like '%!${params.keyWord.trim()}%' ESCAPE '!' || user.accountName like '%!${params.keyWord.trim()}%' ESCAPE '!'`
+          `user.name like '%!${params.keyWord.trim()}%' ESCAPE '!' || user.email like '%!${params.keyWord.trim()}%' ESCAPE '!'`
         );
       }
     }

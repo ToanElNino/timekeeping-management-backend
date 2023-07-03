@@ -29,7 +29,7 @@ export class AuthRepository extends Repository<Admin> {
       throw new HttpException('Not found company code', HttpStatus.BAD_REQUEST);
     return tenantDb;
   }
-  async checkDuplicateAccount(username: string, tenantId: number){
+  async checkDuplicateAccount(username: string, tenantId: number) {
     const accountDB = await this.accountRepository.findOne({
       where: {username: username, tenantId: tenantId},
     });
@@ -105,8 +105,8 @@ export class AuthRepository extends Repository<Admin> {
   }
 
   async validateUser(tenantId: number, accountId: number): Promise<any> {
-    console.log('accountId: ', accountId);
-    console.log('tenantId: ', tenantId);
+    // console.log('accountId: ', accountId);
+    // console.log('tenantId: ', tenantId);
     const user = await this.userRepository.findOne({
       where: {
         tenantId: tenantId,

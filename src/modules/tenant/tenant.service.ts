@@ -10,27 +10,43 @@ import {
 } from 'src/shared/Utils';
 import {IPaginationOptions} from 'nestjs-typeorm-paginate';
 import {UpdateStatusTenantBody} from './request/update-status';
+import {S3Handler} from 'src/shared/S3Handler';
+import {AdminUpdateTenantBody, UpdateTenantBody} from './request/update-tenant';
 @Injectable()
 export class TenantService {
   constructor(
     @InjectRepository(Tenant)
-    private tenantRepository: Repository<Tenant>
+    private tenantRepository: Repository<Tenant>,
+    private readonly s3Handler: S3Handler
   ) {}
 
-  async createNewTenant(body: CreateTenantBody) {
+  async createNewTenant(body: CreateTenantBody, iconFile: Express.Multer.File) {
     const tenantDB = await this.tenantRepository.findOne({
       where: {code: body.code},
     });
     console.log(body);
+    console.log(iconFile);
     console.log(tenantDB);
     if (tenantDB) {
       throw new HttpException('Duplicate tenant code', HttpStatus.BAD_REQUEST);
     }
+
     const newTenant: Partial<Tenant> = {
       name: body.name,
       code: body.code,
       createdAt: nowInMillis(),
     };
+    if (iconFile) {
+      const s3Response = await this.s3Handler.upload('hrm', iconFile);
+      if (s3Response?.Location) newTenant.iconUrl = s3Response?.Location;
+      console.log(s3Response);
+      if (iconFile && !s3Response?.Location) {
+        throw new HttpException(
+          'Image icon upload error',
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+      }
+    }
     const res = await this.tenantRepository.save(newTenant);
     if (!res) {
       throw new HttpException(
@@ -41,12 +57,55 @@ export class TenantService {
     return res;
   }
 
-  async updateTenant(body: CreateTenantBody) {
+  async updateTenant(body: UpdateTenantBody, iconFile: Express.Multer.File) {
     const tenantDB = await this.tenantRepository.findOne({
-      where: {code: body.code},
+      where: {id: body.id},
     });
     if (!tenantDB) {
       throw new HttpException('Not fount tenant', HttpStatus.BAD_REQUEST);
+    }
+    if (iconFile) {
+      const s3Response = await this.s3Handler.upload('hrm', iconFile);
+      if (s3Response?.Location) tenantDB.iconUrl = s3Response?.Location;
+      if (iconFile && !s3Response?.Location) {
+        throw new HttpException(
+          'Image icon upload error',
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+      }
+    }
+    tenantDB.code = body.code;
+    tenantDB.name = body.name;
+    const res = await this.tenantRepository.save(tenantDB);
+    if (!res) {
+      throw new HttpException(
+        'Cannot update tenant',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+    return res;
+  }
+
+  async adminUpdateTenant(
+    body: AdminUpdateTenantBody,
+    iconFile: Express.Multer.File,
+    tenantId: number
+  ) {
+    const tenantDB = await this.tenantRepository.findOne({
+      where: {id: tenantId},
+    });
+    if (!tenantDB) {
+      throw new HttpException('Not fount tenant', HttpStatus.BAD_REQUEST);
+    }
+    if (iconFile) {
+      const s3Response = await this.s3Handler.upload('hrm', iconFile);
+      if (s3Response?.Location) tenantDB.iconUrl = s3Response?.Location;
+      if (iconFile && !s3Response?.Location) {
+        throw new HttpException(
+          'Image icon upload error',
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+      }
     }
     tenantDB.code = body.code;
     tenantDB.name = body.name;

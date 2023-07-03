@@ -5,6 +5,7 @@ import {AuthModule} from '../auth/auth.module';
 import {JwtModule} from '@nestjs/jwt';
 import {TenantService} from './tenant.service';
 import {TenantController} from './tenant.controller';
+import {S3Handler} from 'src/shared/S3Handler';
 @Module({
   imports: [
     AuthModule,
@@ -15,6 +16,6 @@ import {TenantController} from './tenant.controller';
     TypeOrmModule.forFeature([Tenant]),
   ],
   controllers: [TenantController],
-  providers: [TenantService],
+  providers: [TenantService, S3Handler],
 })
 export class TenantModule {}
