@@ -16,7 +16,6 @@ import {JwtAuthGuard} from './jwt-auth.guard';
 import {AuthToken} from './request/auth-token.dto';
 import {LoginBody} from './request/login.dto';
 import {AdminLoginResponse} from './response/login.dto';
-import {User} from 'src/database/entities';
 import {CreateAccountBody} from './request/create-account.dto';
 
 @Controller('auth')

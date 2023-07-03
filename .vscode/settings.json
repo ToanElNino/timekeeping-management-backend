@@ -14,7 +14,9 @@
         "checkin",
         "CICO",
         "Millis",
+        "superadmin",
         "timesheet",
-        "tinyint"
+        "tinyint",
+        "toannguyen"
     ]
 }

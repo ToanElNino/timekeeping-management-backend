@@ -25,7 +25,7 @@ import {LoginBody} from './request/login.dto';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {Role} from 'src/shared/enums';
-import {ROLE_ID} from 'src/shared/enums';
+import {ROLE_ID_NAME} from 'src/shared/enums';
 import {CreateAccountBody} from './request/create-account.dto';
 @Injectable()
 export class AuthService {
@@ -139,7 +139,7 @@ export class AuthService {
   }
 
   async login(user: any): Promise<any> {
-    const roleName = ROLE_ID[user.roleId];
+    const roleName = ROLE_ID_NAME[user.roleId];
     // console.log('roleName: ', roleName);
     if (!roleName)
       throw new HttpException(
@@ -310,5 +310,24 @@ export class AuthService {
       }
     );
     return code;
+  }
+  async extractFieldsFromToken(request: any) {
+    const token = request.headers.authorization;
+    if (!token) {
+      throw Causes.JWT_MISSING;
+    }
+    const user = this.jwtService.decode(token.split(' ')[1]);
+    if (!user || !(user['username'] || user['tenantId']))
+      throw Causes.USER_ERROR;
+    console.log('user: ', user);
+    console.log('token: ', token);
+    console.log('tenantId: ', token);
+    return {
+      tenantId: user['tenantId'],
+      accountId: user['accountId'],
+      userId: user['userId'],
+      role: user['role'],
+      roleId: user['roleId'],
+    };
   }
 }

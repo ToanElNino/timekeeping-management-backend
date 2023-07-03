@@ -1,6 +1,6 @@
 import {Module} from '@nestjs/common';
 import {AuthModule} from '../auth/auth.module';
-import {AdminModule} from '../admin/admin.module';
+import {AdminModule} from '../admin1/admin.module';
 import {PassportModule} from '@nestjs/passport';
 import {JwtModule} from '@nestjs/jwt';
 import {S3Handler} from 'src/shared/S3Handler';

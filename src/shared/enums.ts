@@ -4,11 +4,17 @@ export enum Role {
   SUPER_ADMIN = 'super_admin',
 }
 
-export const ROLE_ID = {
+export const ROLE_ID_NAME = {
   1: Role.USER,
   2: Role.ADMIN,
   3: Role.SUPER_ADMIN,
 };
+
+export enum ROLE_ID {
+  USER = 1,
+  ADMIN = 2,
+  SUPER_ADMIN = 3,
+}
 
 export enum HotWalletStatus {
   COMPLETED = 'completed',
