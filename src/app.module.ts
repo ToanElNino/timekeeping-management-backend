@@ -31,6 +31,7 @@ import {ScheduleModule} from './modules/schedule/schedule.module';
 import {TimeSheetWorkerModule} from './modules/timesheet-worker/timesheet-worker.module';
 import {DepartmentModule} from './modules/department/department.module';
 import {AdminModule} from './modules/admin/admin.module';
+import {RequestModule} from './modules/request/request.module';
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 
@@ -50,6 +51,7 @@ const RedisStore = require('connect-redis')(session);
     ScheduleModule,
     TimeSheetWorkerModule,
     DepartmentModule,
+    RequestModule,
   ],
   controllers: [AppController],
   providers: [

@@ -8,9 +8,21 @@ import {
 } from '../../shared/Utils';
 import {Repository, getConnection} from 'typeorm';
 import {InjectRepository} from '@nestjs/typeorm';
-import {CreateACLRequest} from 'aws-sdk/clients/memorydb';
-import {CreateRequest} from './request/createRequest';
+import {
+  CreateCICORequest,
+  CreateDayOffRequest,
+  CreateWorkFromHomeRequest,
+} from './request/createRequest';
+import { AcceptRequestBody } from './request/acceptRequest';
 
+export const REQUEST_TYPE = {
+  CI_CO: 3,
+  WORK_FROM_HOME: 1,
+  DAY_OFF: 2,
+};
+export const REQUEST_STATUS = {
+  PENDING: 'PENDING',
+};
 @Injectable()
 export class RequestService {
   constructor(
@@ -22,53 +34,86 @@ export class RequestService {
     private timeSheetRepo: Repository<TimeSheet>
   ) {}
 
-  async createRequest(data: CreateRequest) {
-    switch (data.type) {
-      case 1:
-        return this.createCICORequest(data);
-      default:
-        throw new HttpException('Invalid type request', HttpStatus.BAD_REQUEST);
-    }
+  async createCICORequest(
+    data: CreateCICORequest,
+    tenantId: number,
+    userId: number
+  ) {
+    const newRequest: Partial<Request> = {
+      tenantId,
+      userId,
+      type: REQUEST_TYPE.CI_CO,
+      reason: data.reason,
+      changeCITime: data.Time,
+      changeCIType: data.Type,
+      createdAt: nowInMillis(),
+      updatedAt: nowInMillis(),
+      status: REQUEST_STATUS.PENDING,
+    };
+    const request = await this.requestRepo.save(newRequest);
+    if (!request)
+      throw new HttpException(
+        'Cannot create request',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    return request;
   }
 
-  async createCICORequest(data: CreateRequest) {
-    // const monthRecord = data.dayRecord.substring(data.dayRecord.length - 7);
-    // const logEntity: CheckinLog = {
-    //   id: data.id,
-    //   tenantId: data.tenantId,
-    //   dayRecord: data.dayRecord,
-    //   monthRecord,
-    //   timeRecordNumber: data.timeRecordNumber,
-    //   createdAt: nowInMillis(),
-    //   updatedAt: nowInMillis(),
-    //   userId: data.userId,
-    // };
-    // const log = await this.checkinLogRepo.save(logEntity);
-    // if (!log) {
-    //   throw new HttpException(
-    //     `Cannot push log id ${data.id} of user ${data.userId} at day ${data.dayRecord}`,
-    //     HttpStatus.INTERNAL_SERVER_ERROR
-    //   );
-    // }
-    // const timeSheetDB = await this.timeSheetRepo.findOne({
-    //   where: {id: data.id},
-    // });
-    // console.log(timeSheetDB);
-    // if (!timeSheetDB) {
-    //   const timeSheetEntity: Partial<TimeSheet> = {
-    //     id: data.id,
-    //     tenantId: data.tenantId,
-    //     dayRecord: data.dayRecord,
-    //     monthRecord,
-    //     timeRecordNumber: data.timeRecordNumber,
-    //     createdAt: nowInMillis(),
-    //     updatedAt: nowInMillis(),
-    //     userId: data.userId,
-    //   };
-    //   await this.timeSheetRepo.save(timeSheetEntity);
-    // }
+  async createDayOffRequest(
+    data: CreateDayOffRequest,
+    tenantId: number,
+    userId: number
+  ) {
+    const newRequest: Partial<Request> = {
+      tenantId,
+      userId,
+      type: REQUEST_TYPE.DAY_OFF,
+      leaveType: data.TypeLeave,
+      reason: data.reason,
+      workingDayPart: data.WorkingDayPart,
+      // CICODay: '',
+      dayFrom: data.dayFrom,
+      dayTo: data.dayTo,
+      createdAt: nowInMillis(),
+      updatedAt: nowInMillis(),
+      status: REQUEST_STATUS.PENDING,
+    };
+    const request = await this.requestRepo.save(newRequest);
+    if (!request)
+      throw new HttpException(
+        'Cannot create request',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    return request;
+  }
 
-    // return log;
-    return {};
+  async createWorkFromHomeRequest(
+    data: CreateWorkFromHomeRequest,
+    tenantId: number,
+    userId: number
+  ) {
+    const newRequest: Partial<Request> = {
+      tenantId,
+      userId,
+      type: REQUEST_TYPE.WORK_FROM_HOME,
+      reason: data.reason,
+      workingDayPart: data.WorkingDayPart,
+      dayFrom: data.dayFrom,
+      dayTo: data.dayTo,
+      createdAt: nowInMillis(),
+      updatedAt: nowInMillis(),
+      status: REQUEST_STATUS.PENDING,
+    };
+    const request = await this.requestRepo.save(newRequest);
+    if (!request)
+      throw new HttpException(
+        'Cannot create request',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    return request;
+  }
+
+  async adminAcceptCICORequest(body: AcceptRequestBody){
+     
   }
 }

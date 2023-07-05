@@ -1,11 +1,11 @@
-import {Column, Entity, Index, PrimaryColumn} from 'typeorm';
+import {Column, Entity, Index, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity('request')
 @Index('tenant_id', ['tenantId'], {unique: false})
 @Index('user_id', ['userId'], {unique: false})
 export class Request {
-  @PrimaryColumn({name: 'id', type: 'varchar', unique: true, length: 256})
-  id: string;
+  @PrimaryGeneratedColumn({name: 'id', type: 'int'})
+  id: number;
 
   @Column({
     name: 'tenant_id',
@@ -27,10 +27,11 @@ export class Request {
 
   @Column({
     name: 'leave_type',
-    type: 'int',
+    type: 'varchar',
+    length: 20,
     nullable: true,
   })
-  public leaveType: number;
+  public leaveType: string;
 
   @Column({
     name: 'reason',
@@ -77,35 +78,33 @@ export class Request {
   })
   public rejectReason: string;
 
-  @Column({name: 'ci_time', type: 'bigint', nullable: true})
-  public ciTime: number;
+  @Column({name: 'change_ci_time', type: 'bigint', nullable: true})
+  public changeCITime: number;
 
-  @Column({name: 'co_time', type: 'bigint', nullable: true})
-  public coTime: number;
+  @Column({name: 'change_ci_type', type: 'varchar', length: 20, nullable: true})
+  public changeCIType: string;
 
-  @Column({
-    name: 'cico_day',
-    type: 'varchar',
-    length: 10,
-    nullable: true,
-  })
-  public CICODay: string;
+  // @Column({
+  //   name: 'cico_day',
+  //   type: 'varchar',
+  //   length: 10,
+  //   nullable: true,
+  // })
+  // public CICODay: string;
 
   @Column({
     name: 'day_from',
-    type: 'varchar',
-    length: 10,
+    type: 'bigint',
     nullable: true,
   })
-  public dayFrom: string;
+  public dayFrom: number;
 
   @Column({
     name: 'day_to',
-    type: 'varchar',
-    length: 10,
+    type: 'bigint',
     nullable: true,
   })
-  public dayTo: string;
+  public dayTo: number;
 
   @Column({name: 'created_at', type: 'bigint', nullable: true})
   public createdAt: number;

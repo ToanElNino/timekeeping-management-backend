@@ -64,9 +64,11 @@ export class TenantService {
     if (!tenantDB) {
       throw new HttpException('Not fount tenant', HttpStatus.BAD_REQUEST);
     }
+    console.log('tenantDB: ', tenantDB);
     if (iconFile) {
       const s3Response = await this.s3Handler.upload('hrm', iconFile);
       if (s3Response?.Location) tenantDB.iconUrl = s3Response?.Location;
+      console.log(s3Response);
       if (iconFile && !s3Response?.Location) {
         throw new HttpException(
           'Image icon upload error',

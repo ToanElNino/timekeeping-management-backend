@@ -68,7 +68,7 @@ export class AdminController {
     required: false,
     type: String,
   })
-  userGetListTimeSheet(
+  userGetListAdminAccount(
     @Query('page', new DefaultValuePipe(1)) page: number,
     @Query('limit', new DefaultValuePipe(10)) limit: number,
     @Query('roleId', new DefaultValuePipe(0)) roleId: number,
