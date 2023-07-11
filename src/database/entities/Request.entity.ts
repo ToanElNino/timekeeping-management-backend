@@ -97,14 +97,7 @@ export class Request {
     type: 'bigint',
     nullable: true,
   })
-  public dayFrom: number;
-
-  @Column({
-    name: 'day_to',
-    type: 'bigint',
-    nullable: true,
-  })
-  public dayTo: number;
+  public dayTimeStamp: number;
 
   @Column({name: 'created_at', type: 'bigint', nullable: true})
   public createdAt: number;

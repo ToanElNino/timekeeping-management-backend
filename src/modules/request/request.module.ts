@@ -1,6 +1,12 @@
 import {Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {CheckinLog, Request, TimeSheet} from 'src/database/entities';
+import {
+  CheckinLog,
+  Request,
+  Schedule,
+  TimeSheet,
+  User,
+} from 'src/database/entities';
 import {AuthModule} from '../auth/auth.module';
 import {JwtModule} from '@nestjs/jwt';
 import {RequestController} from './request.controller';
@@ -12,7 +18,7 @@ import {RequestService} from './request.service';
       secret: process.env.JWT_SECRET,
       // signOptions: { expiresIn: 24 * 60 * 60 },
     }),
-    TypeOrmModule.forFeature([CheckinLog, TimeSheet, Request]),
+    TypeOrmModule.forFeature([CheckinLog, TimeSheet, Request, Schedule, User]),
   ],
   controllers: [RequestController],
   providers: [RequestService],

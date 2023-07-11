@@ -92,6 +92,9 @@ export class User {
   @Column({name: 'onboard_at', type: 'bigint', nullable: true})
   public onboardAt: number;
 
+  @Column({name: 'offboard_at', type: 'bigint', nullable: true})
+  public offboardAt: number;
+
   @Column({name: 'created_at', type: 'bigint', nullable: true})
   public createdAt: number;
 

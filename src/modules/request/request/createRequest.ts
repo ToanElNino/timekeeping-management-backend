@@ -31,25 +31,19 @@ export class CreateDayOffRequest {
     type: Number,
     example: 1681355502,
   })
-  public dayFrom: number;
-
-  @ApiProperty({
-    type: Number,
-    example: 1681355502,
-  })
-  public dayTo: number;
+  public dayTimeStamp: number;
 
   @ApiProperty({
     type: String,
     example: 'MORNING',
   })
-  public WorkingDayPart: string;
+  public workingDayPart: string;
 
   @ApiProperty({
     type: String,
     example: 'PAID_LEAVE',
   })
-  public TypeLeave: string;
+  public typeLeave: string;
 }
 
 export class CreateWorkFromHomeRequest {
@@ -63,17 +57,11 @@ export class CreateWorkFromHomeRequest {
     type: Number,
     example: 1681355502,
   })
-  public dayFrom: number;
-
-  @ApiProperty({
-    type: Number,
-    example: 1681355502,
-  })
-  public dayTo: number;
+  public dayTimeStamp: number;
 
   @ApiProperty({
     type: String,
     example: 'MORNING',
   })
-  public WorkingDayPart: string;
+  public workingDayPart: string;
 }

@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Put,
+  Post,
   Query,
   Req,
   Request,
@@ -31,6 +32,7 @@ import {Roles} from '../auth/roles.decorator';
 import {AuthService} from '../auth/auth.service';
 import {FileInterceptor} from '@nestjs/platform-express';
 import {
+  AdminCreateStaffRequest,
   StaffUpdateAvatarRequest,
   StaffUpdateProfileRequest,
   UpdateProfileRequest,
@@ -91,12 +93,12 @@ export class UserController {
   }
 
   @Get('/admin/get-list-staff')
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.ADMIN)
   @ApiOperation({
     tags: ['staff'],
-    operationId: 'admin get list tenant staff',
-    summary: 'admin get list tenant staff',
-    description: 'admin get list tenant staff',
+    operationId: 'admin or user get list tenant staff',
+    summary: 'admin or user get list tenant staff',
+    description: 'admin or user get list tenant staff',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -149,6 +151,31 @@ export class UserController {
     );
   }
 
+  @Get('/staff/get-profile')
+  @ApiOperation({
+    tags: ['staff'],
+    operationId: 'Staff get staff profile',
+    summary: 'Staff get staff profile',
+    description: 'Staff get staff profile',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Successful',
+  })
+  async staffGetProfile(@Request() request: any): Promise<any> {
+    const {userId, accountId, tenantId} =
+      await this.authService.extractFieldsFromToken(request);
+    if (!userId) {
+      throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
+    }
+    const res = await this.userService.staffGetProfile(
+      userId,
+      accountId,
+      tenantId
+    );
+    return res;
+  }
+
   @Put('/admin/admin-update-staff-profile')
   @UseInterceptors(FileInterceptor('avatarFile'))
   @ApiOperation({
@@ -169,6 +196,36 @@ export class UserController {
     const res = await this.userService.adminUpdateStaffProfile(
       avatarFile,
       body
+    );
+    return res;
+  }
+
+  @Post('/admin/create-staff')
+  @UseInterceptors(FileInterceptor('avatarFile'))
+  @ApiOperation({
+    tags: ['staff'],
+    operationId: 'Admin create staff',
+    summary: 'Admin create staff',
+    description: 'Admin create staff',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Successful',
+  })
+  @ApiConsumes('multipart/form-data')
+  async adminUpdateStaff(
+    @UploadedFile() avatarFile: Express.Multer.File,
+    @Body() body: AdminCreateStaffRequest,
+    @Request() request: any
+  ): Promise<any> {
+    const {tenantId} = await this.authService.extractFieldsFromToken(request);
+    if (!tenantId) {
+      throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
+    }
+    const res = await this.userService.adminCreateStaff(
+      avatarFile,
+      body,
+      tenantId
     );
     return res;
   }

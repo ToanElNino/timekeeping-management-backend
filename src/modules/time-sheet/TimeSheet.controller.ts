@@ -11,14 +11,20 @@ import {
   Put,
   Req,
   UseGuards,
+  Request,
+  HttpException,
 } from '@nestjs/common';
 import {ApiOperation, ApiQuery, ApiResponse} from '@nestjs/swagger';
 import {TimeSheetService} from './TimeSheet.service';
+import {AuthService} from '../auth/auth.service';
 
 @Controller('time-sheet')
 // @Roles(Role.ADMIN, Role.SUPER_ADMIN)
 export class TimeSheetController {
-  constructor(private readonly timeSheetService: TimeSheetService) {}
+  constructor(
+    private readonly timeSheetService: TimeSheetService,
+    private readonly authService: AuthService
+  ) {}
 
   @Get('user-get-time-sheet')
   @ApiOperation({
@@ -42,16 +48,6 @@ export class TimeSheetController {
     type: String,
   })
   @ApiQuery({
-    name: 'tenantId',
-    required: true,
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'userId',
-    required: true,
-    type: Number,
-  })
-  @ApiQuery({
     name: 'page',
     required: false,
     type: Number,
@@ -61,15 +57,20 @@ export class TimeSheetController {
     required: false,
     type: Number,
   })
-  userGetListTimeSheet(
+  async userGetListTimeSheet(
     @Query('page', new DefaultValuePipe(1)) page: number,
     @Query('limit', new DefaultValuePipe(10)) limit: number,
     @Query('month') month: string,
     @Query('day') day: string,
-    @Query('tenantId') tenantId: number,
-    @Query('userId') userId: number
+    @Request() request: any
   ): Promise<any> {
-    return this.timeSheetService.getListCheckinLog(
+    const {tenantId, userId} = await this.authService.extractFieldsFromToken(
+      request
+    );
+    if (!tenantId || !userId) {
+      throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
+    }
+    return await this.timeSheetService.getListCheckinLog(
       {page, limit},
       {
         tenantId,

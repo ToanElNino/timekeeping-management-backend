@@ -4,6 +4,7 @@ import {InjectQueue} from '@nestjs/bull';
 import {InjectRepository} from '@nestjs/typeorm';
 import {CheckinLog, Schedule, TimeSheet} from 'src/database/entities';
 import {Repository} from 'typeorm';
+import {convertScheduleStringToTimeStampSameDay} from 'src/shared/Utils';
 
 @Injectable()
 export class TimeSheetWorkerService {
@@ -107,7 +108,7 @@ export class TimeSheetWorkerService {
     schedule: Schedule
   ) {
     const timeStampNow = new Date().getTime();
-    const timeStampEnd = this.convertScheduleStringToTimeStamp(
+    const timeStampEnd = convertScheduleStringToTimeStampSameDay(
       schedule.timeEnd1
     );
     // đang trong giờ làm buổi sáng, chắc chắn là checkin time vào buổi sáng => chỉ lưu thời gian checkin, chưa tính toán
@@ -123,14 +124,14 @@ export class TimeSheetWorkerService {
     //qua thời gian làm buổi sáng => tính time sheet cho buổi sáng
     ////////check thời gian checkin
     let maxWorkingDay = 0.5;
-    const timeStampStart = this.convertScheduleStringToTimeStamp(
+    const timeStampStart = convertScheduleStringToTimeStampSameDay(
       schedule.timeStart1
     );
-    const timeStampDelay = this.convertScheduleStringToTimeStamp(
+    const timeStampDelay = convertScheduleStringToTimeStampSameDay(
       schedule.timeDelay1
     );
 
-    const timeStampComeOff = this.convertScheduleStringToTimeStamp(
+    const timeStampComeOff = convertScheduleStringToTimeStampSameDay(
       schedule.timeComeOff1
     );
     // eslint-disable-next-line no-empty
@@ -146,14 +147,14 @@ export class TimeSheetWorkerService {
       maxWorkingDay -= 0.5;
     }
     /////////check thời gian check out
-    const timeStampLeaveOff = this.convertScheduleStringToTimeStamp(
+    const timeStampLeaveOff = convertScheduleStringToTimeStampSameDay(
       schedule.timeLeaveOff1
     );
-    const timeStampEarly = this.convertScheduleStringToTimeStamp(
+    const timeStampEarly = convertScheduleStringToTimeStampSameDay(
       schedule.timeEarly1
     );
 
-    // const timeStampComeOff = this.convertScheduleStringToTimeStamp(
+    // const timeStampComeOff = convertScheduleStringToTimeStampSameDay(
     //   schedule.timeComeOff1
     // );
     // eslint-disable-next-line no-empty
@@ -188,7 +189,7 @@ export class TimeSheetWorkerService {
     schedule: Schedule
   ) {
     const timeStampNow = new Date().getTime();
-    const timeStampEnd = this.convertScheduleStringToTimeStamp(
+    const timeStampEnd = convertScheduleStringToTimeStampSameDay(
       schedule.timeEnd2
     );
     // đang trong giờ làm buổi chiều, chắc chắn timeStampNow -> time end của buỏi sáng
@@ -205,14 +206,14 @@ export class TimeSheetWorkerService {
     //qua thời gian làm buổi sáng => tính time sheet cho buổi sáng
     ////////check thời gian checkin
     let maxWorkingDay = 0.5;
-    const timeStampStart = this.convertScheduleStringToTimeStamp(
+    const timeStampStart = convertScheduleStringToTimeStampSameDay(
       schedule.timeStart2
     );
-    const timeStampDelay = this.convertScheduleStringToTimeStamp(
+    const timeStampDelay = convertScheduleStringToTimeStampSameDay(
       schedule.timeDelay2
     );
 
-    const timeStampComeOff = this.convertScheduleStringToTimeStamp(
+    const timeStampComeOff = convertScheduleStringToTimeStampSameDay(
       schedule.timeComeOff2
     );
     // eslint-disable-next-line no-empty
@@ -229,14 +230,14 @@ export class TimeSheetWorkerService {
       maxWorkingDay -= 0.5;
     }
     /////////check thời gian check out
-    const timeStampLeaveOff = this.convertScheduleStringToTimeStamp(
+    const timeStampLeaveOff = convertScheduleStringToTimeStampSameDay(
       schedule.timeLeaveOff2
     );
-    const timeStampEarly = this.convertScheduleStringToTimeStamp(
+    const timeStampEarly = convertScheduleStringToTimeStampSameDay(
       schedule.timeEarly2
     );
 
-    // const timeStampComeOff = this.convertScheduleStringToTimeStamp(
+    // const timeStampComeOff = convertScheduleStringToTimeStampSameDay(
     //   schedule.timeComeOff1
     // );
     // eslint-disable-next-line no-empty
@@ -299,15 +300,5 @@ export class TimeSheetWorkerService {
       },
     });
     return timesheetList;
-  }
-  // chuyển string schedule thành time stamp cùng ngày
-  convertScheduleStringToTimeStamp(hourString: string) {
-    const hour = Number(hourString.substring(0, 2));
-    const minute = Number(hourString.substring(3, 5));
-    console.log(`hour: ${hour} - minute: ${minute}`);
-    const date = new Date();
-    const res = date.setHours(hour, minute, 0, 0);
-    console.log('res: ', res);
-    return res;
   }
 }

@@ -26,5 +26,5 @@ export class PushACheckinLogRequest {
   @ApiProperty({
     type: Number,
   })
-  public userId: number;
+  public userCheckinLogId: number;
 }

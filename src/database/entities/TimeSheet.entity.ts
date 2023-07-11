@@ -80,28 +80,66 @@ export class TimeSheet {
     name: 'working_day_1',
     type: 'float',
     nullable: false,
-    default: 0,
+    default: -1,
   })
   public workingDay1: number;
+
+  @Column({
+    name: 'working_day_1_off',
+    type: 'float',
+    nullable: false,
+    default: -1,
+  })
+  public workingDay1Off: number;
 
   @Column({
     name: 'working_day_2',
     type: 'float',
     nullable: false,
-    default: 0.5,
+    default: -1,
   })
   public workingDay2: number;
+
+  @Column({
+    name: 'working_day_2_off',
+    type: 'float',
+    nullable: false,
+    default: -1,
+  })
+  public workingDay2Off: number;
 
   @Column({
     name: 'working_hours',
     type: 'float',
     nullable: false,
-    default: 0.5,
+    default: -1,
   })
   public workingHours: number;
 
-  @Column({name: 'time_record_number', type: 'bigint', nullable: false})
+  @Column({name: 'time_record_number', type: 'bigint', nullable: true})
   public timeRecordNumber: number;
+
+  @Column({
+    name: 'ot_time_come',
+    type: 'bigint',
+    nullable: true,
+  })
+  public otTimeCome: number;
+
+  @Column({
+    name: 'ot_time_leave',
+    type: 'bigint',
+    nullable: true,
+  })
+  public otTimeLeave: number;
+
+  @Column({
+    name: 'ot_working_day',
+    type: 'float',
+    nullable: false,
+    default: -1,
+  })
+  public otWorkingDay: number;
 
   @Column({name: 'created_at', type: 'bigint', nullable: true})
   public createdAt: number;

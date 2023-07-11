@@ -1,6 +1,6 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {IPaginationOptions} from 'nestjs-typeorm-paginate';
-import {CheckinLog, TimeSheet} from '../../database/entities';
+import {CheckinLog, TimeSheet, User} from '../../database/entities';
 import {
   getArrayPaginationBuildTotal,
   getOffset,
@@ -16,7 +16,9 @@ export class CheckinLogService {
     @InjectRepository(CheckinLog)
     private checkinLogRepo: Repository<CheckinLog>,
     @InjectRepository(TimeSheet)
-    private timeSheetRepo: Repository<TimeSheet>
+    private timeSheetRepo: Repository<TimeSheet>,
+    @InjectRepository(User)
+    private userRepo: Repository<User>
   ) {}
   async getListCheckinLog(paginationOptions: IPaginationOptions, params: any) {
     const limit = Number(paginationOptions.limit);
@@ -85,49 +87,71 @@ export class CheckinLogService {
   }
   async pushALog(data: PushACheckinLogRequest) {
     const monthRecord = data.dayRecord.substring(data.dayRecord.length - 7);
-    const logEntity: CheckinLog = {
-      id: data.id,
-      tenantId: data.tenantId,
-      dayRecord: data.dayRecord,
-      monthRecord,
-      timeRecordNumber: data.timeRecordNumber,
-      createdAt: nowInMillis(),
-      updatedAt: nowInMillis(),
-      userId: data.userId,
-    };
-    const log = await this.checkinLogRepo.save(logEntity);
-    if (!log) {
-      throw new HttpException(
-        `Cannot push log id ${data.id} of user ${data.userId} at day ${data.dayRecord}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
-    const timeSheetDB = await this.timeSheetRepo.findOne({
-      where: {id: `${data.tenantId}_${data.userId}_${data.dayRecord}`},
-    });
-    console.log(timeSheetDB);
-    if (!timeSheetDB) {
-      const timeSheetEntity: Partial<TimeSheet> = {
-        id: `${data.tenantId}_${data.userId}_${data.dayRecord}`,
+    const userId = await this.getUserIdFromUserCheckinLogId(
+      data.userCheckinLogId,
+      data.tenantId
+    );
+    console.log(userId);
+    if (userId) {
+      const logEntity: CheckinLog = {
+        id: data.id,
         tenantId: data.tenantId,
         dayRecord: data.dayRecord,
         monthRecord,
         timeRecordNumber: data.timeRecordNumber,
         createdAt: nowInMillis(),
         updatedAt: nowInMillis(),
-        userId: data.userId,
+        userId: userId,
       };
-      await this.timeSheetRepo.save(timeSheetEntity);
+      const log = await this.checkinLogRepo.save(logEntity);
+      if (!log) {
+        throw new HttpException(
+          `Cannot push log id ${data.id} of user checkin log ${data.userCheckinLogId} at day ${data.dayRecord}`,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+      }
+      const timeSheetDB = await this.timeSheetRepo.findOne({
+        where: {id: `${data.tenantId}_${userId}_${data.dayRecord}`},
+      });
+      console.log(timeSheetDB);
+      if (!timeSheetDB) {
+        const timeSheetEntity: Partial<TimeSheet> = {
+          id: `${data.tenantId}_${userId}_${data.dayRecord}`,
+          tenantId: data.tenantId,
+          dayRecord: data.dayRecord,
+          monthRecord,
+          timeRecordNumber: data.timeRecordNumber,
+          createdAt: nowInMillis(),
+          updatedAt: nowInMillis(),
+          userId: userId,
+        };
+        await this.timeSheetRepo.save(timeSheetEntity);
+      }
     }
-
-    return log;
+    return data;
   }
 
   async pushListLog(data: PushACheckinLogRequest[]) {
-    const res: CheckinLog[] = [];
+    const res: PushACheckinLogRequest[] = [];
     for (const key in data) {
       res.push(await this.pushALog(data[key]));
     }
     return res;
+  }
+
+  async getUserIdFromUserCheckinLogId(checkinLogId: number, tenantId: number) {
+    const user = await this.userRepo.findOne({
+      where: {
+        checkInLogId: checkinLogId,
+        tenantId: tenantId,
+      },
+    });
+    // if (!user || !user?.checkInLogId) {
+    //   throw new HttpException(
+    //     'User not found or check in log id not found',
+    //     HttpStatus.BAD_REQUEST
+    //   );
+    // }
+    return user?.id;
   }
 }

@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
-import {User} from 'src/database/entities';
+import {Account, Department, User} from 'src/database/entities';
 
 @Injectable()
 export class UserRepository extends Repository<User> {
@@ -14,6 +14,26 @@ export class UserRepository extends Repository<User> {
 
   async filterUser(offset: number, limit: number, params: any) {
     const queryBuilder = this.createQueryBuilder('user')
+      .leftJoin(Department, 'department', 'user.department_id = department.id')
+      .leftJoin(Account, 'account', 'user.account_id = account.id')
+      .select(
+        'user.id,' +
+          'user.tenant_id as tenantId,' +
+          'user.check_in_log_id as checkinLogId,' +
+          'user.account_id as accountId,' +
+          'user.name as name,' +
+          'user.email as email,' +
+          'user.phone_number as phoneNumber,' +
+          'user.avatar_url as avatarUrl,' +
+          'user.status,' +
+          'user.home_address as homeAddress,' +
+          'user.department_id as departmentId,' +
+          'user.onboard_at as onboardAt,' +
+          'user.created_at as createdAt,' +
+          'account.role_id as roleId,' +
+          'account.username as username,' +
+          'department.name as departmentName'
+      )
       .orderBy('user.createdAt', 'DESC')
       .limit(limit)
       .offset(offset);
@@ -67,7 +87,7 @@ export class UserRepository extends Repository<User> {
       });
     }
 
-    const data = await queryBuilder.getMany();
+    const data = await queryBuilder.execute();
     const countData = await queryCount.execute();
     return {data, countData};
   }

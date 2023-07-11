@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import {IPaginationOptions, Pagination} from 'nestjs-typeorm-paginate';
 import * as CryptoJS from 'crypto-js';
 import {Causes} from '../config/exception/causes';
@@ -5,6 +6,7 @@ import axios from 'axios';
 import {fromBuffer} from 'file-type';
 import {BigNumber} from 'bignumber.js';
 import {randomBytes} from 'crypto';
+import {HttpException, HttpStatus} from '@nestjs/common';
 const NodeCache = require('node-cache');
 const nodeCache = new NodeCache({stdTTL: 2, checkperiod: 2});
 const CryptoJS = require('crypto-js');
@@ -238,7 +240,7 @@ export function existValueInEnum(type: any, value: any): boolean {
 export function getOffset(paginationOptions: IPaginationOptions) {
   let offset = 0;
   if (paginationOptions.page && paginationOptions.limit) {
-    if (paginationOptions.page > 0) {
+    if (Number(paginationOptions.page) > 0) {
       offset =
         (Number(paginationOptions.page) - 1) * Number(paginationOptions.limit);
     }
@@ -346,3 +348,46 @@ export function aesEncrypt(data, key) {
 export function aesDecrypt(cipherText, key) {
   return CryptoJS.AES.decrypt(cipherText, key).toString(CryptoJS.enc.Utf8);
 }
+//convert time
+//timestamp to DD-MM-YYYY
+export const convertMillisToDateString = async (
+  createdAt: number,
+  timeType: string
+) => {
+  const date = new Date(Number(createdAt));
+  if (timeType === 'DAY') {
+    return date.toLocaleString('es-CL').slice(0, 10);
+  } else if (timeType === 'MONTH') {
+    return date.toLocaleString('es-CL').slice(3, 10);
+  } else if (timeType === 'YEAR') {
+    return date.toLocaleString('es-CL').slice(6, 10);
+  } else {
+    throw new HttpException('Invalid time type', HttpStatus.BAD_REQUEST);
+  }
+};
+
+// chuyển string schedule thành time stamp cùng ngày
+export const convertScheduleStringToTimeStampSameDay = (hourString: string) => {
+  const hour = Number(hourString.substring(0, 2));
+  const minute = Number(hourString.substring(3, 5));
+  console.log(`hour: ${hour} - minute: ${minute}`);
+  const date = new Date();
+  const res = date.setHours(hour, minute, 0, 0);
+  console.log('res: ', res);
+  return res;
+};
+
+// chuyển string schedule thành time stamp của ngày cùng với day(arg)
+export const convertScheduleStringToTimeStampForADay = (
+  hourString: string,
+  day: number
+) => {
+  const hour = Number(hourString.substring(0, 2));
+  const minute = Number(hourString.substring(3, 5));
+  console.log(`hour: ${hour} - minute: ${minute}`);
+  const date = new Date(Number(day));
+  console.log('date: ', date);
+  const res = date.setHours(hour, minute, 0, 0);
+  console.log('res: ', res);
+  return res;
+};
